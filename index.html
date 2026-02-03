@@ -827,6 +827,54 @@
             opacity: 0.7;
         }
 
+        .studio-add-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .studio-add-form input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--dark);
+        }
+
+        .studio-add-form input:focus {
+            outline: none;
+            border-color: var(--terracotta);
+        }
+
+        .studio-add-form button {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 36px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .studio-add-form button:hover {
+            background: #7d4f45;
+        }
+
+        .studio-empty {
+            text-align: center;
+            color: var(--dark-soft);
+            padding: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .studio-empty.visible {
+            display: block;
+        }
+
         /* Task notes */
         .task-notes {
             font-size: 0.8rem;
@@ -2101,64 +2149,13 @@
             <button class="studio-widget-toggle" id="toggleStudioWidget">−</button>
         </div>
         <div class="studio-widget-body" id="studioWidgetBody">
+            <div class="studio-add-form">
+                <input type="text" id="studioNameInput" placeholder="Naam toevoegen...">
+                <button id="studioAddBtn">+</button>
+            </div>
             <ul class="studio-checklist" id="studioChecklist">
-                <li class="studio-checklist-item" data-name="adrienne">
-                    <input type="checkbox" id="check-adrienne">
-                    <label for="check-adrienne">Adrienne</label>
-                </li>
-                <li class="studio-checklist-item" data-name="jose-van-dijke">
-                    <input type="checkbox" id="check-jose-van-dijke">
-                    <label for="check-jose-van-dijke">José van Dijke</label>
-                </li>
-                <li class="studio-checklist-item" data-name="liesbeth-van-rijswijk">
-                    <input type="checkbox" id="check-liesbeth-van-rijswijk">
-                    <label for="check-liesbeth-van-rijswijk">Liesbeth van Rijswijk</label>
-                </li>
-                <li class="studio-checklist-item" data-name="alice-valk">
-                    <input type="checkbox" id="check-alice-valk">
-                    <label for="check-alice-valk">Alice Valk</label>
-                </li>
-                <li class="studio-checklist-item" data-name="charlie-meijer">
-                    <input type="checkbox" id="check-charlie-meijer">
-                    <label for="check-charlie-meijer">Charlie Meijer</label>
-                </li>
-                <li class="studio-checklist-item" data-name="marielle-boukens">
-                    <input type="checkbox" id="check-marielle-boukens">
-                    <label for="check-marielle-boukens">Mariëlle Boukens</label>
-                </li>
-                <li class="studio-checklist-item" data-name="jacolien-van-dijk">
-                    <input type="checkbox" id="check-jacolien-van-dijk">
-                    <label for="check-jacolien-van-dijk">Jacolien van Dijk</label>
-                </li>
-                <li class="studio-checklist-item" data-name="evelien-lafaille">
-                    <input type="checkbox" id="check-evelien-lafaille">
-                    <label for="check-evelien-lafaille">Evelien Lafaille</label>
-                </li>
-                <li class="studio-checklist-item" data-name="sonja-van-de-reep">
-                    <input type="checkbox" id="check-sonja-van-de-reep">
-                    <label for="check-sonja-van-de-reep">Sonja Van de Reep</label>
-                </li>
-                <li class="studio-checklist-item" data-name="wilma-star">
-                    <input type="checkbox" id="check-wilma-star">
-                    <label for="check-wilma-star">Wilma Star</label>
-                </li>
-                <li class="studio-checklist-item" data-name="henk">
-                    <input type="checkbox" id="check-henk">
-                    <label for="check-henk">Henk</label>
-                </li>
-                <li class="studio-checklist-item" data-name="annemieke-ruggenberg">
-                    <input type="checkbox" id="check-annemieke-ruggenberg">
-                    <label for="check-annemieke-ruggenberg">Annemieke Ruggenberg</label>
-                </li>
-                <li class="studio-checklist-item" data-name="leonie">
-                    <input type="checkbox" id="check-leonie">
-                    <label for="check-leonie">Leonie</label>
-                </li>
-                <li class="studio-checklist-item" data-name="zsuzsa">
-                    <input type="checkbox" id="check-zsuzsa">
-                    <label for="check-zsuzsa">Zsuzsa</label>
-                </li>
             </ul>
+            <div class="studio-empty" id="studioEmpty">Geen namen in de lijst</div>
         </div>
     </div>
 
@@ -3170,45 +3167,94 @@
             btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
         });
 
-        // Load saved checkbox states from localStorage
-        function loadStudioChecklist() {
-            const savedState = JSON.parse(localStorage.getItem('studioChecklist') || '{}');
-            document.querySelectorAll('.studio-checklist-item').forEach(item => {
-                const name = item.dataset.name;
-                const checkbox = item.querySelector('input[type="checkbox"]');
-                if (savedState[name]) {
-                    checkbox.checked = true;
-                    item.classList.add('checked');
-                }
+        // Default names for first load
+        const defaultStudioNames = [
+            'Adrienne', 'José van Dijke', 'Liesbeth van Rijswijk', 'Alice Valk',
+            'Charlie Meijer', 'Mariëlle Boukens', 'Jacolien van Dijk', 'Evelien Lafaille',
+            'Sonja Van de Reep', 'Wilma Star', 'Henk', 'Annemieke Ruggenberg', 'Leonie', 'Zsuzsa'
+        ];
+
+        // Load names from localStorage or use defaults
+        function getStudioNames() {
+            const saved = localStorage.getItem('studioNames');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return [...defaultStudioNames];
+        }
+
+        // Save names to localStorage
+        function saveStudioNames(names) {
+            localStorage.setItem('studioNames', JSON.stringify(names));
+        }
+
+        // Render the checklist
+        function renderStudioChecklist() {
+            const names = getStudioNames();
+            const list = document.getElementById('studioChecklist');
+            const emptyMsg = document.getElementById('studioEmpty');
+
+            list.innerHTML = '';
+
+            if (names.length === 0) {
+                emptyMsg.classList.add('visible');
+            } else {
+                emptyMsg.classList.remove('visible');
+                names.forEach((name, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'studio-checklist-item';
+                    li.dataset.index = index;
+                    li.innerHTML = `
+                        <input type="checkbox" id="check-studio-${index}">
+                        <label for="check-studio-${index}">${name}</label>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.studio-checklist-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        const item = e.target.closest('.studio-checklist-item');
+                        const index = parseInt(item.dataset.index);
+                        item.classList.add('checked');
+
+                        // Remove after short delay for visual feedback
+                        setTimeout(() => {
+                            const names = getStudioNames();
+                            names.splice(index, 1);
+                            saveStudioNames(names);
+                            renderStudioChecklist();
+                        }, 300);
+                    }
+                });
             });
         }
 
-        // Save checkbox states to localStorage
-        function saveStudioChecklist() {
-            const state = {};
-            document.querySelectorAll('.studio-checklist-item').forEach(item => {
-                const name = item.dataset.name;
-                const checkbox = item.querySelector('input[type="checkbox"]');
-                state[name] = checkbox.checked;
-            });
-            localStorage.setItem('studioChecklist', JSON.stringify(state));
+        // Add new name
+        function addStudioName() {
+            const input = document.getElementById('studioNameInput');
+            const name = input.value.trim();
+            if (name) {
+                const names = getStudioNames();
+                names.push(name);
+                saveStudioNames(names);
+                renderStudioChecklist();
+                input.value = '';
+            }
         }
 
-        // Handle checkbox changes
-        document.querySelectorAll('.studio-checklist-item input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const item = e.target.closest('.studio-checklist-item');
-                if (e.target.checked) {
-                    item.classList.add('checked');
-                } else {
-                    item.classList.remove('checked');
-                }
-                saveStudioChecklist();
-            });
+        // Event listeners for adding names
+        document.getElementById('studioAddBtn').addEventListener('click', addStudioName);
+        document.getElementById('studioNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addStudioName();
+            }
         });
 
         // Initialize studio checklist
-        loadStudioChecklist();
+        renderStudioChecklist();
 
         // Load content planning from Google Calendar
         function loadContentPlanning() {
