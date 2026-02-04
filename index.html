@@ -1566,11 +1566,10 @@
         /* ========== OMZET STYLES ========== */
         .omzet-container {
             display: none;
-            max-width: 1100px;
+            max-width: calc(100% - 360px);
             margin: 0;
             margin-left: 20px;
             padding: 0 20px;
-            padding-right: 370px;
         }
 
         .omzet-container.active {
@@ -1592,23 +1591,23 @@
         .omzet-content {
             background: var(--beige);
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             overflow-x: auto;
         }
 
         .omzet-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .omzet-table th {
             background: var(--teal);
             color: var(--beige);
-            padding: 12px 10px;
+            padding: 8px 5px;
             text-align: left;
             font-weight: 500;
-            white-space: nowrap;
+            font-size: 0.75rem;
         }
 
         .omzet-table th:first-child {
@@ -1620,7 +1619,7 @@
         }
 
         .omzet-table td {
-            padding: 10px;
+            padding: 6px 5px;
             border-bottom: 1px solid var(--grey-light);
         }
 
@@ -1640,15 +1639,16 @@
             font-weight: 600;
             color: var(--dark);
             background: var(--grey-light);
+            white-space: nowrap;
         }
 
         .omzet-table input {
-            width: 100%;
-            padding: 8px;
-            border: 2px solid var(--grey-light);
-            border-radius: 6px;
+            width: 80px;
+            padding: 5px;
+            border: 1px solid var(--grey-light);
+            border-radius: 4px;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--dark);
             text-align: right;
         }
