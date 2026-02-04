@@ -1563,6 +1563,44 @@
             white-space: pre-wrap;
         }
 
+        /* ========== OMZET STYLES ========== */
+        .omzet-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .omzet-container.active {
+            display: block;
+        }
+
+        .omzet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-right: 350px;
+        }
+
+        .omzet-header h2 {
+            color: var(--beige);
+            font-weight: 400;
+        }
+
+        .omzet-content {
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .omzet-placeholder {
+            text-align: center;
+            color: var(--dark-soft);
+            padding: 60px 20px;
+        }
+
         /* ========== MASTERCLASS AANMELDINGEN STYLES ========== */
         .masterclass-container {
             display: none;
@@ -2169,6 +2207,7 @@
         <button class="view-btn" data-view="sjablonen">Sjablonen</button>
         <button class="view-btn" data-view="modellen">Modellen</button>
         <button class="view-btn" data-view="masterclass">Masterclass</button>
+        <button class="view-btn" data-view="omzet">Omzet</button>
     </div>
 
     <div class="project-selector">
@@ -2597,6 +2636,18 @@
         </div>
     </div>
 
+    <!-- Omzet Container -->
+    <div class="omzet-container">
+        <div class="omzet-header">
+            <h2>Omzet Overzicht</h2>
+        </div>
+        <div class="omzet-content">
+            <div class="omzet-placeholder">
+                <p>Omzet overzicht komt hier</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Current project
         let currentProject = localStorage.getItem('kanbanCurrentProject') || 'portretcoach';
@@ -2841,6 +2892,7 @@
         const templatesEl = document.querySelector('.templates-container');
         const modelsEl = document.querySelector('.models-container');
         const masterclassEl = document.querySelector('.masterclass-container');
+        const omzetEl = document.querySelector('.omzet-container');
 
         viewBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2854,6 +2906,7 @@
                     templatesEl.classList.remove('active');
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
                     projectSelector.style.display = 'flex';
                 } else if (view === 'agenda') {
                     boardEl.classList.add('hidden');
@@ -2861,6 +2914,7 @@
                     templatesEl.classList.remove('active');
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderAgenda();
                 } else if (view === 'sjablonen') {
@@ -2869,6 +2923,7 @@
                     templatesEl.classList.add('active');
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderTemplates();
                 } else if (view === 'modellen') {
@@ -2877,6 +2932,7 @@
                     templatesEl.classList.remove('active');
                     modelsEl.classList.add('active');
                     masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderModels();
                 } else if (view === 'masterclass') {
@@ -2885,8 +2941,17 @@
                     templatesEl.classList.remove('active');
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.add('active');
+                    omzetEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderMasterclasses();
+                } else if (view === 'omzet') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.add('active');
+                    projectSelector.style.display = 'none';
                 }
             });
         });
