@@ -1592,13 +1592,93 @@
             background: var(--beige);
             border-radius: 12px;
             padding: 20px;
-            min-height: 400px;
+            overflow-x: auto;
         }
 
-        .omzet-placeholder {
-            text-align: center;
-            color: var(--dark-soft);
-            padding: 60px 20px;
+        .omzet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .omzet-table th {
+            background: var(--teal);
+            color: var(--beige);
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .omzet-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .omzet-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .omzet-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        .omzet-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .omzet-table tr:last-child td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+
+        .omzet-table tr:last-child td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+
+        .omzet-table .month-cell {
+            font-weight: 600;
+            color: var(--dark);
+            background: var(--grey-light);
+        }
+
+        .omzet-table input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+            text-align: right;
+        }
+
+        .omzet-table input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .omzet-table .calculated {
+            text-align: right;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .omzet-table .totals-row {
+            background: var(--gold);
+            font-weight: 600;
+        }
+
+        .omzet-table .totals-row td {
+            color: white;
+            border-bottom: none;
+        }
+
+        .omzet-table .totals-row td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+
+        .omzet-table .totals-row td:last-child {
+            border-radius: 0 0 8px 0;
         }
 
         /* ========== MASTERCLASS AANMELDINGEN STYLES ========== */
@@ -2642,9 +2722,152 @@
             <h2>Omzet Overzicht</h2>
         </div>
         <div class="omzet-content">
-            <div class="omzet-placeholder">
-                <p>Omzet overzicht komt hier</p>
-            </div>
+            <table class="omzet-table">
+                <thead>
+                    <tr>
+                        <th>Maand</th>
+                        <th>Bedrag op inkomsten (na huur)</th>
+                        <th>1100 IB naar ink/ VL. Nieuw bedrag.</th>
+                        <th>50% salaris</th>
+                        <th>25% opex</th>
+                        <th>10% spaar</th>
+                        <th>10% belasting/ spaar</th>
+                        <th>5% profit</th>
+                    </tr>
+                </thead>
+                <tbody id="omzetTableBody">
+                    <tr data-month="januari">
+                        <td class="month-cell">januari</td>
+                        <td><input type="number" class="omzet-input" data-month="januari" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="februari">
+                        <td class="month-cell">februari</td>
+                        <td><input type="number" class="omzet-input" data-month="februari" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="maart">
+                        <td class="month-cell">maart</td>
+                        <td><input type="number" class="omzet-input" data-month="maart" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="april">
+                        <td class="month-cell">april</td>
+                        <td><input type="number" class="omzet-input" data-month="april" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="mei">
+                        <td class="month-cell">mei</td>
+                        <td><input type="number" class="omzet-input" data-month="mei" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="juni">
+                        <td class="month-cell">juni</td>
+                        <td><input type="number" class="omzet-input" data-month="juni" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="juli">
+                        <td class="month-cell">juli</td>
+                        <td><input type="number" class="omzet-input" data-month="juli" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="augustus">
+                        <td class="month-cell">augustus</td>
+                        <td><input type="number" class="omzet-input" data-month="augustus" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="september">
+                        <td class="month-cell">september</td>
+                        <td><input type="number" class="omzet-input" data-month="september" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="oktober">
+                        <td class="month-cell">oktober</td>
+                        <td><input type="number" class="omzet-input" data-month="oktober" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="november">
+                        <td class="month-cell">november</td>
+                        <td><input type="number" class="omzet-input" data-month="november" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="december">
+                        <td class="month-cell">december</td>
+                        <td><input type="number" class="omzet-input" data-month="december" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr class="totals-row">
+                        <td>Totaal</td>
+                        <td class="calculated" id="totalInkomsten"></td>
+                        <td class="calculated" id="totalNieuw"></td>
+                        <td class="calculated" id="totalSalaris"></td>
+                        <td class="calculated" id="totalOpex"></td>
+                        <td class="calculated" id="totalSpaar"></td>
+                        <td class="calculated" id="totalBelasting"></td>
+                        <td class="calculated" id="totalProfit"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -3322,6 +3545,113 @@
 
         // Initialize studio checklist
         renderStudioChecklist();
+
+        // ========== OMZET BEREKENINGEN ==========
+        // Load saved omzet data
+        function loadOmzetData() {
+            const saved = localStorage.getItem('omzetData');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        // Save omzet data
+        function saveOmzetData(data) {
+            localStorage.setItem('omzetData', JSON.stringify(data));
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            if (amount === 0 || isNaN(amount)) return '€ 0';
+            return '€ ' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Calculate and update row
+        function calculateOmzetRow(month, bedrag) {
+            const row = document.querySelector(`tr[data-month="${month}"]`);
+            if (!row) return;
+
+            const nieuwBedrag = bedrag - 1100; // Trek 1100 IB af
+            const salaris = nieuwBedrag * 0.50;
+            const opex = nieuwBedrag * 0.25;
+            const spaar = nieuwBedrag * 0.10;
+            const belasting = nieuwBedrag * 0.10;
+            const profit = nieuwBedrag * 0.05;
+
+            row.querySelector('[data-calc="nieuw"]').textContent = bedrag > 0 ? formatCurrency(nieuwBedrag) : '';
+            row.querySelector('[data-calc="salaris"]').textContent = bedrag > 0 ? formatCurrency(salaris) : '';
+            row.querySelector('[data-calc="opex"]').textContent = bedrag > 0 ? formatCurrency(opex) : '';
+            row.querySelector('[data-calc="spaar"]').textContent = bedrag > 0 ? formatCurrency(spaar) : '';
+            row.querySelector('[data-calc="belasting"]').textContent = bedrag > 0 ? formatCurrency(belasting) : '';
+            row.querySelector('[data-calc="profit"]').textContent = bedrag > 0 ? formatCurrency(profit) : '';
+        }
+
+        // Calculate totals
+        function calculateOmzetTotals() {
+            const data = loadOmzetData();
+            let totalInkomsten = 0;
+            let totalNieuw = 0;
+            let totalSalaris = 0;
+            let totalOpex = 0;
+            let totalSpaar = 0;
+            let totalBelasting = 0;
+            let totalProfit = 0;
+
+            Object.values(data).forEach(bedrag => {
+                if (bedrag > 0) {
+                    totalInkomsten += bedrag;
+                    const nieuw = bedrag - 1100;
+                    totalNieuw += nieuw;
+                    totalSalaris += nieuw * 0.50;
+                    totalOpex += nieuw * 0.25;
+                    totalSpaar += nieuw * 0.10;
+                    totalBelasting += nieuw * 0.10;
+                    totalProfit += nieuw * 0.05;
+                }
+            });
+
+            document.getElementById('totalInkomsten').textContent = formatCurrency(totalInkomsten);
+            document.getElementById('totalNieuw').textContent = formatCurrency(totalNieuw);
+            document.getElementById('totalSalaris').textContent = formatCurrency(totalSalaris);
+            document.getElementById('totalOpex').textContent = formatCurrency(totalOpex);
+            document.getElementById('totalSpaar').textContent = formatCurrency(totalSpaar);
+            document.getElementById('totalBelasting').textContent = formatCurrency(totalBelasting);
+            document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
+        }
+
+        // Initialize omzet table
+        function initOmzetTable() {
+            const data = loadOmzetData();
+
+            // Fill in saved values and calculate
+            document.querySelectorAll('.omzet-input').forEach(input => {
+                const month = input.dataset.month;
+                if (data[month]) {
+                    input.value = data[month];
+                    calculateOmzetRow(month, data[month]);
+                }
+            });
+
+            calculateOmzetTotals();
+
+            // Add event listeners
+            document.querySelectorAll('.omzet-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const month = e.target.dataset.month;
+                    const bedrag = parseFloat(e.target.value) || 0;
+
+                    // Save
+                    const data = loadOmzetData();
+                    data[month] = bedrag;
+                    saveOmzetData(data);
+
+                    // Calculate
+                    calculateOmzetRow(month, bedrag);
+                    calculateOmzetTotals();
+                });
+            });
+        }
+
+        // Initialize on load
+        initOmzetTable();
 
         // Load content planning from Google Calendar
         function loadContentPlanning() {
