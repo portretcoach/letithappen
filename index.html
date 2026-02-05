@@ -1166,6 +1166,36 @@
             border-color: var(--teal);
         }
 
+        .template-editor {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            color: var(--dark);
+            line-height: 1.5;
+            background: white;
+        }
+
+        .template-editor:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .template-editor:empty:before {
+            content: attr(placeholder);
+            color: var(--dark-soft);
+        }
+
+        .template-editor a {
+            color: var(--teal);
+            text-decoration: underline;
+        }
+
         .template-modal input {
             width: 100%;
             padding: 10px 12px;
@@ -1241,10 +1271,14 @@
             font-size: 0.95rem;
             line-height: 1.6;
             color: var(--dark);
-            white-space: pre-wrap;
             max-height: 400px;
             overflow-y: auto;
             border: 1px solid var(--grey-light);
+        }
+
+        .template-view-content a {
+            color: var(--teal);
+            text-decoration: underline;
         }
 
         .btn-copy {
@@ -2483,8 +2517,8 @@
                 <input type="text" id="templateSubject" placeholder="Bijv. Welkom bij Portretcoach!">
             </div>
             <div class="form-group">
-                <label>Inhoud</label>
-                <textarea id="templateContent" rows="10" placeholder="Typ hier je sjabloon..."></textarea>
+                <label>Inhoud (links blijven behouden bij plakken)</label>
+                <div id="templateContent" class="template-editor" contenteditable="true" placeholder="Typ hier je sjabloon..."></div>
             </div>
             <div class="form-group">
                 <label>Tags (komma-gescheiden)</label>
@@ -3833,7 +3867,7 @@
             document.getElementById('templateTitle').value = '';
             document.getElementById('templateCategory').value = 'email';
             document.getElementById('templateSubject').value = '';
-            document.getElementById('templateContent').value = '';
+            document.getElementById('templateContent').innerHTML = '';
             document.getElementById('templateTags').value = '';
             document.getElementById('deleteTemplateBtn').style.display = 'none';
             document.getElementById('templateModal').classList.add('active');
@@ -3842,7 +3876,7 @@
         // Save template
         document.getElementById('saveTemplateBtn').addEventListener('click', () => {
             const title = document.getElementById('templateTitle').value.trim();
-            const content = document.getElementById('templateContent').value.trim();
+            const content = document.getElementById('templateContent').innerHTML.trim();
 
             if (!title) {
                 alert('Voer een titel in');
@@ -3927,7 +3961,7 @@
                 ? `Onderwerp: ${template.subject}`
                 : '';
 
-            document.getElementById('viewTemplateContent').textContent = template.content;
+            document.getElementById('viewTemplateContent').innerHTML = template.content;
 
             // Store current template for edit/copy
             document.getElementById('templateViewModal').dataset.templateId = template.id;
@@ -3969,7 +4003,7 @@
                 document.getElementById('templateTitle').value = template.title;
                 document.getElementById('templateCategory').value = template.category;
                 document.getElementById('templateSubject').value = template.subject || '';
-                document.getElementById('templateContent').value = template.content;
+                document.getElementById('templateContent').innerHTML = template.content;
                 document.getElementById('templateTags').value = template.tags ? template.tags.join(', ') : '';
                 document.getElementById('deleteTemplateBtn').style.display = 'inline-block';
 
