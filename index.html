@@ -1,0 +1,4755 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Let It Happen</title>
+
+    <!-- PWA / iPhone App settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Let It Happen">
+    <meta name="theme-color" content="#264d5e">
+
+    <!-- App Icon voor iPhone -->
+    <link rel="apple-touch-icon" href="icon.svg">
+    <style>
+        /* Huisstijl kleuren Iris van 't Riet */
+        :root {
+            --teal: #264d5e;
+            --teal-light: #3a6a7e;
+            --gold: #d2a512;
+            --gold-hover: #b8920f;
+            --beige: #fbfaf8;
+            --beige-warm: #faf9f5;
+            --terracotta: #966054;
+            --grey-light: #d9d2ca;
+            --dark: #30302e;
+            --dark-soft: #5a5a58;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--teal);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--beige);
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .board {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-right: 340px;
+        }
+
+        .column {
+            background: var(--beige);
+            border-radius: 12px;
+            width: 300px;
+            min-height: 400px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--grey-light);
+        }
+
+        .column-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .task-count {
+            background: var(--teal);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--beige);
+        }
+
+        .tasks {
+            min-height: 300px;
+        }
+
+        .task {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .task:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+        }
+
+        .task.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .task-content {
+            font-size: 0.95rem;
+            color: var(--dark);
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-date {
+            font-size: 0.75rem;
+            color: var(--dark-soft);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--terracotta);
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+        }
+
+        .add-task-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(38, 77, 94, 0.05);
+            border: 2px dashed var(--grey-light);
+            border-radius: 8px;
+            color: var(--dark-soft);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .add-task-btn:hover {
+            background: rgba(38, 77, 94, 0.1);
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .add-task-form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .add-task-form.active {
+            display: block;
+        }
+
+        .add-task-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: none;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .add-task-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .form-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn-add {
+            background: var(--gold);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: var(--gold-hover);
+        }
+
+        .btn-cancel {
+            background: var(--grey-light);
+            color: var(--dark);
+        }
+
+        .btn-cancel:hover {
+            background: #ccc7bf;
+        }
+
+        .drop-indicator {
+            height: 4px;
+            background: var(--gold);
+            border-radius: 2px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .column.drag-over .drop-indicator {
+            opacity: 1;
+        }
+
+        /* Priority colors - aangepast aan huisstijl */
+        .task.priority-high {
+            border-left: 4px solid var(--terracotta);
+        }
+
+        .task.priority-medium {
+            border-left: 4px solid var(--gold);
+        }
+
+        .task.priority-low {
+            border-left: 4px solid var(--teal);
+        }
+
+        .priority-select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-family: inherit;
+            color: var(--dark);
+        }
+
+        .priority-select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        /* Project selector */
+        .project-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .project-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--beige);
+            background: transparent;
+            color: var(--beige);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .project-btn:hover {
+            background: rgba(251, 250, 248, 0.1);
+        }
+
+        .project-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+
+        /* View toggle */
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: none;
+            background: rgba(251, 250, 248, 0.2);
+            color: var(--beige);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: rgba(251, 250, 248, 0.3);
+        }
+
+        .view-btn.active {
+            background: var(--beige);
+            color: var(--teal);
+        }
+
+        /* Agenda styles */
+        .agenda-container {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .agenda-container.active {
+            display: block;
+        }
+
+        .board.hidden {
+            display: none;
+        }
+
+        .agenda-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: var(--beige);
+        }
+
+        .agenda-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .agenda-nav button {
+            background: rgba(251, 250, 248, 0.2);
+            border: none;
+            color: var(--beige);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .agenda-nav button:hover {
+            background: rgba(251, 250, 248, 0.3);
+        }
+
+        .agenda-month {
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .agenda-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--grey-light);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .agenda-day-header {
+            background: var(--teal-light);
+            color: var(--beige);
+            padding: 10px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .agenda-day {
+            background: var(--beige);
+            min-height: 100px;
+            padding: 8px;
+            position: relative;
+        }
+
+        .agenda-day.other-month {
+            background: var(--grey-light);
+            opacity: 0.5;
+        }
+
+        .agenda-day.today {
+            background: rgba(210, 165, 18, 0.15);
+        }
+
+        .day-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .agenda-day.today .day-number {
+            background: var(--gold);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .appointment {
+            font-size: 0.75rem;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: transform 0.1s;
+        }
+
+        .appointment:hover {
+            transform: scale(1.02);
+        }
+
+        .appointment.masterclass {
+            background: var(--gold);
+            color: white;
+        }
+
+        .appointment.fotoshoot {
+            background: var(--teal);
+            color: white;
+        }
+
+        .appointment.google {
+            background: var(--grey-light);
+            color: var(--dark);
+        }
+
+        /* Google Calendar embed */
+        .google-calendar-section {
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .google-calendar-section h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .calendar-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .calendar-tab {
+            padding: 8px 16px;
+            border: 2px solid var(--grey-light);
+            background: transparent;
+            color: var(--dark);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .calendar-tab:hover {
+            border-color: var(--teal);
+        }
+
+        .calendar-tab.active {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: white;
+        }
+
+        .calendar-embed {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* Appointment form */
+        .add-appointment-section {
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .add-appointment-section h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .appointment-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .appointment-form .btn-add {
+            grid-column: 1 / -1;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        /* Appointment legend */
+        .appointment-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--beige);
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-color.masterclass { background: var(--gold); }
+        .legend-color.fotoshoot { background: var(--teal); }
+
+        /* Appointment modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .modal-details {
+            margin-bottom: 20px;
+        }
+
+        .modal-details p {
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .modal-details strong {
+            color: var(--dark-soft);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-delete {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-close {
+            background: var(--grey-light);
+            color: var(--dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Content planning widget */
+        .content-widget {
+            position: fixed;
+            top: 80px;
+            right: 30px;
+            width: 280px;
+            background: var(--beige);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            overflow: hidden;
+            max-height: 200px;
+        }
+
+        .content-widget-header {
+            background: var(--gold);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-widget-header h3 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .content-widget-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .content-widget-body {
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .content-widget.collapsed .content-widget-body {
+            display: none;
+        }
+
+        .content-item {
+            background: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--gold);
+        }
+
+        .content-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-item-date {
+            font-size: 0.75rem;
+            color: var(--dark-soft);
+            margin-bottom: 4px;
+        }
+
+        .content-item-title {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .content-widget-empty {
+            text-align: center;
+            color: var(--dark-soft);
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Studio Content Widget */
+        .studio-widget {
+            position: fixed;
+            top: 300px;
+            right: 30px;
+            width: 280px;
+            background: var(--beige);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            overflow: hidden;
+            max-height: calc(100vh - 320px);
+        }
+
+        .studio-widget-header {
+            background: var(--terracotta);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .studio-widget-header h3 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .studio-widget-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .studio-widget-body {
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .studio-widget.collapsed .studio-widget-body {
+            display: none;
+        }
+
+        .studio-checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .studio-checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--terracotta);
+            transition: opacity 0.2s;
+        }
+
+        .studio-checklist-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .studio-checklist-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--terracotta);
+        }
+
+        .studio-checklist-item label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .studio-checklist-item.checked label {
+            text-decoration: line-through;
+            color: var(--dark-soft);
+        }
+
+        .studio-checklist-item.checked {
+            opacity: 0.7;
+        }
+
+        .studio-add-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .studio-add-form input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--dark);
+        }
+
+        .studio-add-form input:focus {
+            outline: none;
+            border-color: var(--terracotta);
+        }
+
+        .studio-add-form button {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 36px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .studio-add-form button:hover {
+            background: #7d4f45;
+        }
+
+        .studio-empty {
+            text-align: center;
+            color: var(--dark-soft);
+            padding: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .studio-empty.visible {
+            display: block;
+        }
+
+        /* Task notes */
+        .task-notes {
+            font-size: 0.8rem;
+            color: var(--dark-soft);
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--grey-light);
+            font-style: italic;
+        }
+
+        .task-edit-btn {
+            background: none;
+            border: none;
+            color: var(--teal);
+            cursor: pointer;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            margin-right: 8px;
+        }
+
+        .task-edit-btn:hover {
+            opacity: 1;
+        }
+
+        /* Task edit modal */
+        .task-modal {
+            max-width: 450px;
+        }
+
+        .task-modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .task-modal textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+            color: var(--dark);
+        }
+
+        .task-modal textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .task-modal label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            margin-bottom: 5px;
+        }
+
+        .task-modal select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .task-modal .modal-buttons {
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background: var(--gold-hover);
+        }
+
+        /* ========== SJABLONEN STYLES ========== */
+        .templates-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .templates-container.active {
+            display: block;
+        }
+
+        .templates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-right: 350px;
+        }
+
+        .templates-header h2 {
+            color: var(--beige);
+            font-weight: 400;
+            font-size: 1.5rem;
+        }
+
+        .btn-add-template {
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(210, 165, 18, 0.3);
+        }
+
+        .btn-add-template:hover {
+            background: var(--gold-hover);
+        }
+
+        .templates-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .template-filter-btn {
+            padding: 8px 16px;
+            border: 2px solid rgba(251, 250, 248, 0.3);
+            background: transparent;
+            color: var(--beige);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .template-filter-btn:hover {
+            background: rgba(251, 250, 248, 0.1);
+        }
+
+        .template-filter-btn.active {
+            background: var(--beige);
+            border-color: var(--beige);
+            color: var(--teal);
+        }
+
+        .templates-search {
+            margin-bottom: 20px;
+        }
+
+        .templates-search input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--beige);
+            color: var(--dark);
+        }
+
+        .templates-search input:focus {
+            outline: 3px solid var(--gold);
+        }
+
+        .templates-search input::placeholder {
+            color: var(--dark-soft);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .template-card {
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .template-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .template-card-category {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .template-card-category.model { background: var(--terracotta); color: white; }
+        .template-card-category.masterclass { background: var(--gold); color: white; }
+        .template-card-category.fotoshoot { background: var(--teal); color: white; }
+
+        .template-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .template-card-preview {
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            line-height: 1.4;
+            max-height: 60px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .template-card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .template-tag {
+            background: rgba(38, 77, 94, 0.1);
+            color: var(--teal);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        .template-card-date {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.7rem;
+            color: var(--dark-soft);
+        }
+
+        .templates-empty {
+            text-align: center;
+            color: var(--beige);
+            padding: 60px 20px;
+            font-size: 1.1rem;
+        }
+
+        .templates-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Template Modal */
+        .template-modal {
+            max-width: 600px;
+            width: 95%;
+        }
+
+        .template-modal textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 200px;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .template-modal textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .template-editor {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            color: var(--dark);
+            line-height: 1.5;
+            background: white;
+        }
+
+        .template-editor:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .template-editor:empty:before {
+            content: attr(placeholder);
+            color: var(--dark-soft);
+        }
+
+        .template-editor a {
+            color: var(--teal);
+            text-decoration: underline;
+        }
+
+        .template-modal input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .template-modal input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .template-modal select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .template-modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .template-modal label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        /* Template View Modal */
+        .template-view-modal {
+            max-width: 700px;
+            width: 95%;
+        }
+
+        .template-view-modal h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .template-view-meta {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .template-view-subject {
+            background: var(--grey-light);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .template-view-subject:empty {
+            display: none;
+        }
+
+        .template-view-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--dark);
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--grey-light);
+        }
+
+        .template-view-content a {
+            color: var(--teal);
+            text-decoration: underline;
+        }
+
+        .btn-copy {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--teal-light);
+        }
+
+        .btn-copy.copied {
+            background: #27ae60;
+        }
+
+        .btn-edit {
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background: var(--gold-hover);
+        }
+
+        /* ========== MODELLEN DATABASE STYLES ========== */
+        .models-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .models-container.active {
+            display: block;
+        }
+
+        .models-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-right: 350px;
+        }
+
+        .models-header h2 {
+            color: var(--beige);
+            font-weight: 400;
+            font-size: 1.5rem;
+        }
+
+        .btn-add-model {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(150, 96, 84, 0.3);
+        }
+
+        .btn-add-model:hover {
+            background: #7d4f45;
+        }
+
+        .models-search {
+            margin-bottom: 20px;
+        }
+
+        .models-search input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--beige);
+            color: var(--dark);
+        }
+
+        .models-search input:focus {
+            outline: 3px solid var(--terracotta);
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .model-card {
+            background: var(--beige);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .model-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .model-photo {
+            width: 100%;
+            height: 200px;
+            background: var(--grey-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-soft);
+            font-size: 3rem;
+            overflow: hidden;
+        }
+
+        .model-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .model-info {
+            padding: 15px;
+        }
+
+        .model-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .model-age {
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            margin-bottom: 8px;
+        }
+
+        .model-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .model-instagram {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--teal);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .model-instagram:hover {
+            text-decoration: underline;
+        }
+
+        .models-empty {
+            text-align: center;
+            color: var(--beige);
+            padding: 60px 20px;
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+
+        .models-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Model Modal */
+        .model-modal {
+            max-width: 500px;
+            width: 95%;
+        }
+
+        .model-modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .model-modal label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .model-modal input,
+        .model-modal textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .model-modal input:focus,
+        .model-modal textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .model-modal textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .photo-upload-area {
+            border: 2px dashed var(--grey-light);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .photo-upload-area:hover {
+            border-color: var(--teal);
+            background: rgba(38, 77, 94, 0.05);
+        }
+
+        .photo-upload-area.has-photo {
+            padding: 10px;
+        }
+
+        .photo-upload-area img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+        }
+
+        .photo-upload-text {
+            color: var(--dark-soft);
+            font-size: 0.9rem;
+        }
+
+        .photo-upload-text span {
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        #modelPhotoInput {
+            display: none;
+        }
+
+        /* Model View Modal */
+        .model-view-modal {
+            max-width: 550px;
+            width: 95%;
+        }
+
+        .model-view-photo {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background: var(--grey-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .model-view-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .model-view-photo-placeholder {
+            font-size: 4rem;
+            color: var(--dark-soft);
+        }
+
+        .model-view-details {
+            margin-bottom: 20px;
+        }
+
+        .model-view-details p {
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .model-view-details strong {
+            color: var(--dark-soft);
+        }
+
+        .model-view-details a {
+            color: var(--teal);
+        }
+
+        .model-view-notes {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--dark);
+            border: 1px solid var(--grey-light);
+            white-space: pre-wrap;
+        }
+
+        /* ========== OMZET STYLES ========== */
+        .omzet-container {
+            display: none;
+            max-width: calc(100% - 360px);
+            margin: 0;
+            margin-left: 20px;
+            padding: 0 20px;
+        }
+
+        .omzet-container.active {
+            display: block;
+        }
+
+        .omzet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .omzet-header h2 {
+            color: var(--beige);
+            font-weight: 400;
+        }
+
+        .omzet-content {
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .omzet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .omzet-table th {
+            background: var(--teal);
+            color: var(--beige);
+            padding: 8px 5px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .omzet-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .omzet-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .omzet-table td {
+            padding: 6px 5px;
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        .omzet-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .omzet-table tr:last-child td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+
+        .omzet-table tr:last-child td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+
+        .omzet-table .month-cell {
+            font-weight: 600;
+            color: var(--dark);
+            background: var(--grey-light);
+            white-space: nowrap;
+        }
+
+        .omzet-table input {
+            width: 80px;
+            padding: 5px;
+            border: 1px solid var(--grey-light);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: var(--dark);
+            text-align: right;
+        }
+
+        .omzet-table input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .omzet-table .calculated {
+            text-align: right;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .omzet-table .totals-row {
+            background: var(--gold);
+            font-weight: 600;
+        }
+
+        .omzet-table .totals-row td {
+            color: white;
+            border-bottom: none;
+        }
+
+        .omzet-table .totals-row td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+
+        .omzet-table .totals-row td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+
+        /* ========== MASTERCLASS AANMELDINGEN STYLES ========== */
+        .masterclass-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .masterclass-container.active {
+            display: block;
+        }
+
+        .masterclass-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-right: 350px;
+        }
+
+        .masterclass-header h2 {
+            color: var(--beige);
+            font-weight: 400;
+            font-size: 1.5rem;
+        }
+
+        .btn-add-masterclass {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(210, 165, 18, 0.3);
+        }
+
+        .btn-add-masterclass:hover {
+            background: var(--gold-hover);
+        }
+
+        .masterclass-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .masterclass-filter-btn {
+            background: var(--beige);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--dark);
+            transition: all 0.2s;
+        }
+
+        .masterclass-filter-btn:hover {
+            background: var(--grey-light);
+        }
+
+        .masterclass-filter-btn.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .masterclass-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .masterclass-card {
+            background: var(--beige);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .masterclass-card-header {
+            background: var(--teal);
+            color: var(--beige);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .masterclass-card-header:hover {
+            background: var(--teal-light);
+        }
+
+        .masterclass-card-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .masterclass-card-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .masterclass-card-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+        }
+
+        .masterclass-card-stats .full-indicator {
+            background: var(--gold);
+            color: var(--dark);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .btn-add-participant:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .masterclass-card-body {
+            display: none;
+            padding: 0;
+        }
+
+        .masterclass-card.expanded .masterclass-card-body {
+            display: block;
+        }
+
+        .masterclass-card-actions {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--grey-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-add-participant {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn-add-participant:hover {
+            background: #7d4f45;
+        }
+
+        .btn-edit-masterclass {
+            background: transparent;
+            border: 1px solid var(--teal);
+            color: var(--teal);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-edit-masterclass:hover {
+            background: var(--teal);
+            color: white;
+        }
+
+        .masterclass-model-note {
+            padding: 15px 20px;
+            background: rgba(210, 165, 18, 0.1);
+            border-bottom: 1px solid var(--grey-light);
+            font-size: 0.9rem;
+            color: var(--dark);
+            white-space: pre-wrap;
+        }
+
+        .masterclass-model-note strong {
+            color: var(--teal);
+        }
+
+        .participants-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .participants-table th,
+        .participants-table td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        .participants-table th {
+            background: rgba(38, 77, 94, 0.08);
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+
+        .participants-table td {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .participants-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .participants-table tr:hover td {
+            background: rgba(38, 77, 94, 0.03);
+        }
+
+        .participant-email {
+            color: var(--teal);
+        }
+
+        .participant-email a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .participant-email a:hover {
+            text-decoration: underline;
+        }
+
+        .checkbox-cell {
+            text-align: center !important;
+            width: 100px;
+        }
+
+        .status-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--teal);
+        }
+
+        .status-complete {
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        .status-pending {
+            color: var(--terracotta);
+        }
+
+        .participant-notes-cell {
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            max-width: 200px;
+        }
+
+        .participant-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit-participant,
+        .btn-delete-participant {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-edit-participant:hover {
+            background: var(--grey-light);
+        }
+
+        .btn-delete-participant:hover {
+            background: #ffebee;
+        }
+
+        .no-participants {
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--dark-soft);
+            font-size: 0.95rem;
+        }
+
+        .masterclass-empty {
+            text-align: center;
+            color: var(--beige);
+            padding: 60px 20px;
+            font-size: 1.1rem;
+        }
+
+        .masterclass-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Masterclass Modal */
+        .masterclass-modal {
+            max-width: 450px;
+            width: 95%;
+        }
+
+        .masterclass-modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .masterclass-modal label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .masterclass-modal input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .masterclass-modal input:focus,
+        .masterclass-modal textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .masterclass-modal textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Participant Modal */
+        .participant-modal {
+            max-width: 450px;
+            width: 95%;
+        }
+
+        .participant-modal .form-group {
+            margin-bottom: 15px;
+        }
+
+        .participant-modal label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dark-soft);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .participant-modal input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .participant-modal input:focus,
+        .participant-modal textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .participant-modal textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--dark);
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--teal);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                padding-top: env(safe-area-inset-top, 20px);
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+
+            .view-toggle {
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .view-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .board {
+                flex-direction: column;
+                align-items: center;
+                padding-right: 0 !important;
+            }
+
+            .column {
+                width: 100%;
+                max-width: none;
+                min-height: 200px;
+            }
+
+            .project-selector {
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .project-btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+
+            .agenda-grid {
+                grid-template-columns: repeat(7, 1fr);
+                font-size: 0.8rem;
+            }
+
+            .agenda-day {
+                min-height: 60px;
+                padding: 4px;
+            }
+
+            .appointment {
+                font-size: 0.65rem;
+                padding: 2px 4px;
+            }
+
+            .appointment-form {
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-legend {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .content-widget,
+            .studio-widget {
+                display: none;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .templates-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding-right: 0;
+            }
+
+            .templates-filter {
+                justify-content: center;
+            }
+
+            .template-modal,
+            .template-view-modal {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .models-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding-right: 0;
+            }
+
+            .model-modal,
+            .model-view-modal {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .masterclass-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding-right: 0;
+            }
+
+            .masterclass-filter {
+                justify-content: center;
+            }
+
+            .masterclass-card-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .masterclass-card-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .participants-table {
+                font-size: 0.8rem;
+            }
+
+            .participants-table th,
+            .participants-table td {
+                padding: 8px 10px;
+            }
+
+            .checkbox-cell {
+                width: 60px;
+            }
+
+            .masterclass-modal,
+            .participant-modal {
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Content Planning Widget -->
+    <div class="content-widget" id="contentWidget">
+        <div class="content-widget-header">
+            <h3>Contentplanning deze week</h3>
+            <button class="content-widget-toggle" id="toggleWidget">−</button>
+        </div>
+        <div class="content-widget-body" id="contentWidgetBody">
+            <div class="content-widget-empty">Laden...</div>
+        </div>
+    </div>
+
+    <!-- Studio Content Widget -->
+    <div class="studio-widget" id="studioWidget">
+        <div class="studio-widget-header">
+            <h3>Studio Content</h3>
+            <button class="studio-widget-toggle" id="toggleStudioWidget">−</button>
+        </div>
+        <div class="studio-widget-body" id="studioWidgetBody">
+            <div class="studio-add-form">
+                <input type="text" id="studioNameInput" placeholder="Naam toevoegen...">
+                <button id="studioAddBtn">+</button>
+            </div>
+            <ul class="studio-checklist" id="studioChecklist">
+            </ul>
+            <div class="studio-empty" id="studioEmpty">Geen namen in de lijst</div>
+        </div>
+    </div>
+
+    <h1>Let It Happen</h1>
+
+    <div class="view-toggle">
+        <button class="view-btn active" data-view="kanban">Kanban</button>
+        <button class="view-btn" data-view="agenda">Agenda</button>
+        <button class="view-btn" data-view="sjablonen">Sjablonen</button>
+        <button class="view-btn" data-view="modellen">Modellen</button>
+        <button class="view-btn" data-view="masterclass">Masterclass</button>
+        <button class="view-btn" data-view="omzet">Omzet</button>
+    </div>
+
+    <div class="project-selector">
+        <button class="project-btn active" data-project="portretcoach">Portretcoach</button>
+        <button class="project-btn" data-project="studio">Studio</button>
+        <button class="project-btn" data-project="persoonlijk">Persoonlijk</button>
+        <button class="project-btn" data-project="vakantie">Vakantie</button>
+    </div>
+
+    <div class="board">
+        <div class="column" data-status="todo">
+            <div class="column-header">
+                <span class="column-title">📋 Te Doen</span>
+                <span class="task-count">0</span>
+            </div>
+            <div class="drop-indicator"></div>
+            <div class="tasks"></div>
+            <button class="add-task-btn">+ Taak toevoegen</button>
+            <div class="add-task-form">
+                <textarea placeholder="Voer een taak in..." rows="3"></textarea>
+                <select class="priority-select">
+                    <option value="low">Lage prioriteit</option>
+                    <option value="medium" selected>Gemiddelde prioriteit</option>
+                    <option value="high">Hoge prioriteit</option>
+                </select>
+                <div class="form-buttons">
+                    <button class="btn-add">Toevoegen</button>
+                    <button class="btn-cancel">Annuleren</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" data-status="inprogress">
+            <div class="column-header">
+                <span class="column-title">🔄 Bezig</span>
+                <span class="task-count">0</span>
+            </div>
+            <div class="drop-indicator"></div>
+            <div class="tasks"></div>
+            <button class="add-task-btn">+ Taak toevoegen</button>
+            <div class="add-task-form">
+                <textarea placeholder="Voer een taak in..." rows="3"></textarea>
+                <select class="priority-select">
+                    <option value="low">Lage prioriteit</option>
+                    <option value="medium" selected>Gemiddelde prioriteit</option>
+                    <option value="high">Hoge prioriteit</option>
+                </select>
+                <div class="form-buttons">
+                    <button class="btn-add">Toevoegen</button>
+                    <button class="btn-cancel">Annuleren</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" data-status="done">
+            <div class="column-header">
+                <span class="column-title">✅ Voltooid</span>
+                <span class="task-count">0</span>
+            </div>
+            <div class="drop-indicator"></div>
+            <div class="tasks"></div>
+            <button class="add-task-btn">+ Taak toevoegen</button>
+            <div class="add-task-form">
+                <textarea placeholder="Voer een taak in..." rows="3"></textarea>
+                <select class="priority-select">
+                    <option value="low">Lage prioriteit</option>
+                    <option value="medium" selected>Gemiddelde prioriteit</option>
+                    <option value="high">Hoge prioriteit</option>
+                </select>
+                <div class="form-buttons">
+                    <button class="btn-add">Toevoegen</button>
+                    <button class="btn-cancel">Annuleren</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agenda View -->
+    <div class="agenda-container">
+        <!-- Google Calendar Section -->
+        <div class="google-calendar-section">
+            <h3>Google Agenda</h3>
+            <div class="calendar-tabs">
+                <button class="calendar-tab active" data-calendar="masterclass">Masterclasses</button>
+                <button class="calendar-tab" data-calendar="fotoshoot">Fotoshoots</button>
+            </div>
+            <iframe
+                id="googleCalendarEmbed"
+                class="calendar-embed"
+                src="https://calendar.google.com/calendar/embed?src=info%40irisvantriet.nl&ctz=Europe%2FAmsterdam&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0"
+                frameborder="0"
+                scrolling="no">
+            </iframe>
+        </div>
+
+        <div class="appointment-legend">
+            <div class="legend-item">
+                <div class="legend-color masterclass"></div>
+                <span>Masterclass / Aanbod</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color fotoshoot"></div>
+                <span>Fotoshoot</span>
+            </div>
+        </div>
+
+        <div class="agenda-header">
+            <div class="agenda-nav">
+                <button id="prevMonth">&larr;</button>
+                <span class="agenda-month" id="currentMonth">Februari 2026</span>
+                <button id="nextMonth">&rarr;</button>
+            </div>
+            <button id="todayBtn" class="view-btn">Vandaag</button>
+        </div>
+
+        <div class="agenda-grid" id="agendaGrid">
+            <!-- Generated by JS -->
+        </div>
+
+        <div class="add-appointment-section">
+            <h3>Afspraak toevoegen</h3>
+            <div class="appointment-form">
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="appointmentType">
+                        <option value="masterclass">Masterclass / Aanbod</option>
+                        <option value="fotoshoot">Fotoshoot</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Datum</label>
+                    <input type="date" id="appointmentDate">
+                </div>
+                <div class="form-group">
+                    <label>Tijd</label>
+                    <input type="time" id="appointmentTime">
+                </div>
+                <div class="form-group">
+                    <label>Klant / Naam</label>
+                    <input type="text" id="appointmentClient" placeholder="Naam">
+                </div>
+                <div class="form-group full-width">
+                    <label>Omschrijving</label>
+                    <input type="text" id="appointmentDesc" placeholder="Bijv. Portretfotografie workshop">
+                </div>
+                <button class="btn-add" id="addAppointmentBtn">Afspraak toevoegen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sjablonen View -->
+    <div class="templates-container">
+        <div class="templates-header">
+            <h2>Sjablonen Database</h2>
+            <button class="btn-add-template" id="addTemplateBtn">+ Nieuw Sjabloon</button>
+        </div>
+
+        <div class="templates-filter">
+            <button class="template-filter-btn active" data-category="all">Alles</button>
+            <button class="template-filter-btn" data-category="model">Model</button>
+            <button class="template-filter-btn" data-category="masterclass">Masterclass</button>
+            <button class="template-filter-btn" data-category="fotoshoot">Fotoshoot</button>
+        </div>
+
+        <div class="templates-search">
+            <input type="text" id="templateSearch" placeholder="Zoek sjablonen...">
+        </div>
+
+        <div class="templates-grid" id="templatesGrid">
+            <!-- Generated by JS -->
+        </div>
+    </div>
+
+    <!-- Template Modal (Add/Edit) -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal template-modal">
+            <h3 id="templateModalTitle">Nieuw Sjabloon</h3>
+            <div class="form-group">
+                <label>Titel</label>
+                <input type="text" id="templateTitle" placeholder="Bijv. Welkomstmail nieuwe klant">
+            </div>
+            <div class="form-group">
+                <label>Categorie</label>
+                <select id="templateCategory">
+                    <option value="model">Model</option>
+                    <option value="masterclass">Masterclass</option>
+                    <option value="fotoshoot">Fotoshoot</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Onderwerp (optioneel)</label>
+                <input type="text" id="templateSubject" placeholder="Bijv. Welkom bij Portretcoach!">
+            </div>
+            <div class="form-group">
+                <label>Inhoud (links blijven behouden bij plakken)</label>
+                <div id="templateContent" class="template-editor" contenteditable="true" placeholder="Typ hier je sjabloon..."></div>
+            </div>
+            <div class="form-group">
+                <label>Tags (komma-gescheiden)</label>
+                <input type="text" id="templateTags" placeholder="Bijv. welkom, klant, intro">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-delete" id="deleteTemplateBtn" style="display: none;">Verwijderen</button>
+                <button class="btn-save" id="saveTemplateBtn">Opslaan</button>
+                <button class="btn-close" id="closeTemplateModal">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template View Modal -->
+    <div class="modal-overlay" id="templateViewModal">
+        <div class="modal template-view-modal">
+            <h3 id="viewTemplateTitle">Sjabloon</h3>
+            <div class="template-view-meta" id="viewTemplateMeta"></div>
+            <div class="template-view-subject" id="viewTemplateSubject"></div>
+            <div class="template-view-content" id="viewTemplateContent"></div>
+            <div class="modal-buttons">
+                <button class="btn-copy" id="copyTemplateBtn">Kopieer naar klembord</button>
+                <button class="btn-edit" id="editTemplateFromView">Bewerken</button>
+                <button class="btn-close" id="closeViewModal">Sluiten</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modellen Database View -->
+    <div class="models-container">
+        <div class="models-header">
+            <h2>Modellen Database</h2>
+            <button class="btn-add-model" id="addModelBtn">+ Nieuw Model</button>
+        </div>
+
+        <div class="models-search">
+            <input type="text" id="modelSearch" placeholder="Zoek modellen...">
+        </div>
+
+        <div class="models-grid" id="modelsGrid">
+            <!-- Generated by JS -->
+        </div>
+    </div>
+
+    <!-- Model Modal (Add/Edit) -->
+    <div class="modal-overlay" id="modelModal">
+        <div class="modal model-modal">
+            <h3 id="modelModalTitle">Nieuw Model</h3>
+            <div class="form-group">
+                <label>Foto</label>
+                <div class="photo-upload-area" id="photoUploadArea">
+                    <div class="photo-upload-text">
+                        <span>Klik om foto te uploaden</span><br>
+                        of sleep een foto hierheen
+                    </div>
+                </div>
+                <input type="file" id="modelPhotoInput" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>Naam *</label>
+                <input type="text" id="modelName" placeholder="Volledige naam">
+            </div>
+            <div class="form-group">
+                <label>Leeftijd</label>
+                <input type="number" id="modelAge" placeholder="Bijv. 25" min="0" max="100">
+            </div>
+            <div class="form-group">
+                <label>Instagram</label>
+                <input type="text" id="modelInstagram" placeholder="@username of volledige URL">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="modelEmail" placeholder="email@voorbeeld.nl">
+            </div>
+            <div class="form-group">
+                <label>Telefoon</label>
+                <input type="tel" id="modelPhone" placeholder="+31 6 12345678">
+            </div>
+            <div class="form-group">
+                <label>Notities</label>
+                <textarea id="modelNotes" rows="3" placeholder="Extra opmerkingen, beschikbaarheid, etc."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-delete" id="deleteModelBtn" style="display: none;">Verwijderen</button>
+                <button class="btn-save" id="saveModelBtn">Opslaan</button>
+                <button class="btn-close" id="closeModelModal">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model View Modal -->
+    <div class="modal-overlay" id="modelViewModal">
+        <div class="modal model-view-modal">
+            <h3 id="viewModelName">Model</h3>
+            <div class="model-view-photo" id="viewModelPhoto">
+                <div class="model-view-photo-placeholder">📷</div>
+            </div>
+            <div class="model-view-details" id="viewModelDetails">
+                <!-- Filled by JS -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-edit" id="editModelFromView">Bewerken</button>
+                <button class="btn-close" id="closeModelViewModal">Sluiten</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Masterclass Aanmeldingen View -->
+    <div class="masterclass-container">
+        <div class="masterclass-header">
+            <h2>Masterclass Aanmeldingen</h2>
+            <button class="btn-add-masterclass" id="addMasterclassBtn">+ Nieuwe Masterclass</button>
+        </div>
+
+        <div class="masterclass-filter">
+            <button class="masterclass-filter-btn active" data-filter="all">Alles</button>
+            <button class="masterclass-filter-btn" data-filter="upcoming">Aankomend</button>
+            <button class="masterclass-filter-btn" data-filter="past">Afgelopen</button>
+        </div>
+
+        <div class="masterclass-list" id="masterclassList">
+            <!-- Generated by JS -->
+        </div>
+    </div>
+
+    <!-- Masterclass Modal (Add/Edit) -->
+    <div class="modal-overlay" id="masterclassModal">
+        <div class="modal masterclass-modal">
+            <h3 id="masterclassModalTitle">Nieuwe Masterclass</h3>
+            <div class="form-group">
+                <label>Titel *</label>
+                <input type="text" id="masterclassTitle" placeholder="Bijv. Portretfotografie Basis">
+            </div>
+            <div class="form-group">
+                <label>Datum *</label>
+                <input type="date" id="masterclassDate">
+            </div>
+            <div class="form-group">
+                <label>Max. deelnemers</label>
+                <input type="number" id="masterclassMaxParticipants" value="6" min="1" max="20">
+            </div>
+            <div class="form-group">
+                <label>Model (notitie)</label>
+                <textarea id="masterclassModel" rows="3" placeholder="Bijv. naam model, contactgegevens, bijzonderheden..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-delete" id="deleteMasterclassBtn" style="display: none;">Verwijderen</button>
+                <button class="btn-save" id="saveMasterclassBtn">Opslaan</button>
+                <button class="btn-close" id="closeMasterclassModal">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Modal (Add/Edit) -->
+    <div class="modal-overlay" id="participantModal">
+        <div class="modal participant-modal">
+            <h3 id="participantModalTitle">Deelnemer Toevoegen</h3>
+            <div class="form-group">
+                <label>Naam *</label>
+                <input type="text" id="participantName" placeholder="Volledige naam">
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="participantEmail" placeholder="email@voorbeeld.nl">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="participantInfoSent">
+                        Info mail gestuurd
+                    </label>
+                    <label>
+                        <input type="checkbox" id="participantInvoiceSent">
+                        Factuur verstuurd
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Notities</label>
+                <textarea id="participantNotes" rows="2" placeholder="Bijv. factuur begin feb, wachtlijst, al betaald..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-delete" id="deleteParticipantBtn" style="display: none;">Verwijderen</button>
+                <button class="btn-save" id="saveParticipantBtn">Opslaan</button>
+                <button class="btn-close" id="closeParticipantModal">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Modal -->
+    <div class="modal-overlay" id="appointmentModal">
+        <div class="modal">
+            <h3 id="modalTitle">Afspraak details</h3>
+            <div class="modal-details" id="modalDetails">
+                <!-- Filled by JS -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-delete" id="deleteAppointment">Verwijderen</button>
+                <button class="btn-close" id="closeModal">Sluiten</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Edit Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal task-modal">
+            <h3>Taak bewerken</h3>
+            <div class="form-group">
+                <label>Taak</label>
+                <textarea id="editTaskContent" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Notities</label>
+                <textarea id="editTaskNotes" rows="4" placeholder="Voeg notities toe..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Prioriteit</label>
+                <select id="editTaskPriority">
+                    <option value="low">Lage prioriteit</option>
+                    <option value="medium">Gemiddelde prioriteit</option>
+                    <option value="high">Hoge prioriteit</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-delete" id="deleteTaskBtn">Verwijderen</button>
+                <button class="btn-save" id="saveTaskBtn">Opslaan</button>
+                <button class="btn-close" id="closeTaskModal">Annuleren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Omzet Container -->
+    <div class="omzet-container">
+        <div class="omzet-header">
+            <h2>Omzet Overzicht</h2>
+        </div>
+        <div class="omzet-content">
+            <table class="omzet-table">
+                <thead>
+                    <tr>
+                        <th>Maand</th>
+                        <th>Inkomsten</th>
+                        <th>1100 IB</th>
+                        <th>Salaris 50%</th>
+                        <th>Opex 25%</th>
+                        <th>Sparen 10%</th>
+                        <th>Belasting 10%</th>
+                        <th>Profit 5%</th>
+                    </tr>
+                </thead>
+                <tbody id="omzetTableBody">
+                    <tr data-month="januari">
+                        <td class="month-cell">januari</td>
+                        <td><input type="number" class="omzet-input" data-month="januari" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="februari">
+                        <td class="month-cell">februari</td>
+                        <td><input type="number" class="omzet-input" data-month="februari" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="maart">
+                        <td class="month-cell">maart</td>
+                        <td><input type="number" class="omzet-input" data-month="maart" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="april">
+                        <td class="month-cell">april</td>
+                        <td><input type="number" class="omzet-input" data-month="april" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="mei">
+                        <td class="month-cell">mei</td>
+                        <td><input type="number" class="omzet-input" data-month="mei" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="juni">
+                        <td class="month-cell">juni</td>
+                        <td><input type="number" class="omzet-input" data-month="juni" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="juli">
+                        <td class="month-cell">juli</td>
+                        <td><input type="number" class="omzet-input" data-month="juli" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="augustus">
+                        <td class="month-cell">augustus</td>
+                        <td><input type="number" class="omzet-input" data-month="augustus" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="september">
+                        <td class="month-cell">september</td>
+                        <td><input type="number" class="omzet-input" data-month="september" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="oktober">
+                        <td class="month-cell">oktober</td>
+                        <td><input type="number" class="omzet-input" data-month="oktober" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="november">
+                        <td class="month-cell">november</td>
+                        <td><input type="number" class="omzet-input" data-month="november" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr data-month="december">
+                        <td class="month-cell">december</td>
+                        <td><input type="number" class="omzet-input" data-month="december" placeholder="0"></td>
+                        <td class="calculated" data-calc="nieuw"></td>
+                        <td class="calculated" data-calc="salaris"></td>
+                        <td class="calculated" data-calc="opex"></td>
+                        <td class="calculated" data-calc="spaar"></td>
+                        <td class="calculated" data-calc="belasting"></td>
+                        <td class="calculated" data-calc="profit"></td>
+                    </tr>
+                    <tr class="totals-row">
+                        <td>Totaal</td>
+                        <td class="calculated" id="totalInkomsten"></td>
+                        <td class="calculated" id="totalNieuw"></td>
+                        <td class="calculated" id="totalSalaris"></td>
+                        <td class="calculated" id="totalOpex"></td>
+                        <td class="calculated" id="totalSpaar"></td>
+                        <td class="calculated" id="totalBelasting"></td>
+                        <td class="calculated" id="totalProfit"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Current project
+        let currentProject = localStorage.getItem('kanbanCurrentProject') || 'portretcoach';
+
+        // Load tasks from localStorage
+        function loadTasks() {
+            return JSON.parse(localStorage.getItem(`kanbanTasks_${currentProject}`)) || [];
+        }
+        let tasks = loadTasks();
+
+        // Save tasks to localStorage
+        function saveTasks() {
+            localStorage.setItem(`kanbanTasks_${currentProject}`, JSON.stringify(tasks));
+        }
+
+        // Switch project
+        function switchProject(project) {
+            currentProject = project;
+            localStorage.setItem('kanbanCurrentProject', project);
+            tasks = loadTasks();
+            renderTasks();
+
+            // Update active button
+            document.querySelectorAll('.project-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.project === project);
+            });
+        }
+
+        // Project button handlers
+        document.querySelectorAll('.project-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchProject(btn.dataset.project);
+            });
+        });
+
+        // Set initial active project button
+        document.querySelector(`.project-btn[data-project="${currentProject}"]`)?.classList.add('active');
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Format date
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('nl-NL', {
+                day: 'numeric',
+                month: 'short'
+            });
+        }
+
+        // Create task element
+        function createTaskElement(task) {
+            const div = document.createElement('div');
+            div.className = `task priority-${task.priority}`;
+            div.draggable = true;
+            div.dataset.id = task.id;
+
+            div.innerHTML = `
+                <div class="task-content">${escapeHtml(task.content)}</div>
+                ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ''}
+                <div class="task-footer">
+                    <span class="task-date">${formatDate(task.createdAt)}</span>
+                    <div>
+                        <button class="task-edit-btn" title="Bewerken">&#9998;</button>
+                        <button class="delete-btn" title="Verwijderen">×</button>
+                    </div>
+                </div>
+            `;
+
+            // Edit button
+            div.querySelector('.task-edit-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openTaskModal(task);
+            });
+
+            // Delete button
+            div.querySelector('.delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteTask(task.id);
+            });
+
+            // Double click to edit
+            div.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                openTaskModal(task);
+            });
+
+            // Drag events
+            div.addEventListener('dragstart', handleDragStart);
+            div.addEventListener('dragend', handleDragEnd);
+
+            return div;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render all tasks
+        function renderTasks() {
+            document.querySelectorAll('.column').forEach(column => {
+                const status = column.dataset.status;
+                const tasksContainer = column.querySelector('.tasks');
+                const countEl = column.querySelector('.task-count');
+
+                tasksContainer.innerHTML = '';
+
+                const columnTasks = tasks.filter(t => t.status === status);
+                columnTasks.forEach(task => {
+                    tasksContainer.appendChild(createTaskElement(task));
+                });
+
+                countEl.textContent = columnTasks.length;
+            });
+        }
+
+        // Add new task
+        function addTask(content, status, priority) {
+            const task = {
+                id: generateId(),
+                content: content.trim(),
+                status,
+                priority,
+                createdAt: new Date().toISOString()
+            };
+            tasks.push(task);
+            saveTasks();
+            renderTasks();
+        }
+
+        // Delete task
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+            renderTasks();
+        }
+
+        // Move task to new status
+        function moveTask(id, newStatus) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.status = newStatus;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Drag and drop handlers
+        let draggedTask = null;
+
+        function handleDragStart(e) {
+            draggedTask = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.column').forEach(col => {
+                col.classList.remove('drag-over');
+            });
+            draggedTask = null;
+        }
+
+        // Column drag events
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                column.classList.add('drag-over');
+            });
+
+            column.addEventListener('dragleave', () => {
+                column.classList.remove('drag-over');
+            });
+
+            column.addEventListener('drop', (e) => {
+                e.preventDefault();
+                column.classList.remove('drag-over');
+
+                if (draggedTask) {
+                    const taskId = draggedTask.dataset.id;
+                    const newStatus = column.dataset.status;
+                    moveTask(taskId, newStatus);
+                }
+            });
+        });
+
+        // Add task form handlers
+        document.querySelectorAll('.column').forEach(column => {
+            const addBtn = column.querySelector('.add-task-btn');
+            const form = column.querySelector('.add-task-form');
+            const textarea = form.querySelector('textarea');
+            const prioritySelect = form.querySelector('.priority-select');
+            const btnAdd = form.querySelector('.btn-add');
+            const btnCancel = form.querySelector('.btn-cancel');
+
+            addBtn.addEventListener('click', () => {
+                form.classList.add('active');
+                addBtn.style.display = 'none';
+                textarea.focus();
+            });
+
+            btnCancel.addEventListener('click', () => {
+                form.classList.remove('active');
+                addBtn.style.display = 'block';
+                textarea.value = '';
+            });
+
+            btnAdd.addEventListener('click', () => {
+                const content = textarea.value.trim();
+                if (content) {
+                    addTask(content, column.dataset.status, prioritySelect.value);
+                    textarea.value = '';
+                    form.classList.remove('active');
+                    addBtn.style.display = 'block';
+                }
+            });
+
+            textarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    btnAdd.click();
+                }
+                if (e.key === 'Escape') {
+                    btnCancel.click();
+                }
+            });
+        });
+
+        // Initial render
+        renderTasks();
+
+        // ========== VIEW TOGGLE ==========
+        const viewBtns = document.querySelectorAll('.view-btn[data-view]');
+        const boardEl = document.querySelector('.board');
+        const agendaEl = document.querySelector('.agenda-container');
+        const projectSelector = document.querySelector('.project-selector');
+        const templatesEl = document.querySelector('.templates-container');
+        const modelsEl = document.querySelector('.models-container');
+        const masterclassEl = document.querySelector('.masterclass-container');
+        const omzetEl = document.querySelector('.omzet-container');
+
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = btn.dataset.view;
+                viewBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                if (view === 'kanban') {
+                    boardEl.classList.remove('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
+                    projectSelector.style.display = 'flex';
+                } else if (view === 'agenda') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.add('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
+                    projectSelector.style.display = 'none';
+                    renderAgenda();
+                } else if (view === 'sjablonen') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.add('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
+                    projectSelector.style.display = 'none';
+                    renderTemplates();
+                } else if (view === 'modellen') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.add('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
+                    projectSelector.style.display = 'none';
+                    renderModels();
+                } else if (view === 'masterclass') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.add('active');
+                    omzetEl.classList.remove('active');
+                    projectSelector.style.display = 'none';
+                    renderMasterclasses();
+                } else if (view === 'omzet') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.add('active');
+                    projectSelector.style.display = 'none';
+                }
+            });
+        });
+
+        // ========== AGENDA ==========
+        let currentDate = new Date();
+        let appointments = JSON.parse(localStorage.getItem('kanbanAppointments')) || [];
+
+        const monthNames = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+                          'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+        const dayNames = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+
+        function saveAppointments() {
+            localStorage.setItem('kanbanAppointments', JSON.stringify(appointments));
+        }
+
+        function renderAgenda() {
+            const grid = document.getElementById('agendaGrid');
+            const monthLabel = document.getElementById('currentMonth');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            monthLabel.textContent = `${monthNames[month]} ${year}`;
+
+            // Clear grid
+            grid.innerHTML = '';
+
+            // Add day headers
+            dayNames.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'agenda-day-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+
+            // Get first day of month and total days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const totalDays = lastDay.getDate();
+
+            // Adjust for Monday start (0 = Monday, 6 = Sunday)
+            let startDay = firstDay.getDay() - 1;
+            if (startDay < 0) startDay = 6;
+
+            // Previous month days
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                const dayEl = createDayElement(prevMonthLastDay - i, true, year, month - 1);
+                grid.appendChild(dayEl);
+            }
+
+            // Current month days
+            const today = new Date();
+            for (let day = 1; day <= totalDays; day++) {
+                const isToday = day === today.getDate() &&
+                               month === today.getMonth() &&
+                               year === today.getFullYear();
+                const dayEl = createDayElement(day, false, year, month, isToday);
+                grid.appendChild(dayEl);
+            }
+
+            // Next month days
+            const totalCells = grid.children.length;
+            const remaining = 42 - totalCells; // 6 rows * 7 days
+            for (let day = 1; day <= remaining; day++) {
+                const dayEl = createDayElement(day, true, year, month + 1);
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function createDayElement(day, isOtherMonth, year, month, isToday = false) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'agenda-day';
+            if (isOtherMonth) dayEl.classList.add('other-month');
+            if (isToday) dayEl.classList.add('today');
+
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = day;
+            dayEl.appendChild(dayNumber);
+
+            // Add appointments for this day
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayAppointments = appointments.filter(a => a.date === dateStr);
+
+            dayAppointments.forEach(apt => {
+                const aptEl = document.createElement('div');
+                aptEl.className = `appointment ${apt.type}`;
+                aptEl.textContent = apt.time ? `${apt.time} ${apt.client || apt.description}` : (apt.client || apt.description);
+                aptEl.addEventListener('click', () => showAppointmentModal(apt));
+                dayEl.appendChild(aptEl);
+            });
+
+            return dayEl;
+        }
+
+        // Navigation
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderAgenda();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderAgenda();
+        });
+
+        document.getElementById('todayBtn').addEventListener('click', () => {
+            currentDate = new Date();
+            renderAgenda();
+        });
+
+        // Add appointment
+        document.getElementById('addAppointmentBtn').addEventListener('click', () => {
+            const type = document.getElementById('appointmentType').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const client = document.getElementById('appointmentClient').value;
+            const description = document.getElementById('appointmentDesc').value;
+
+            if (!date) {
+                alert('Selecteer een datum');
+                return;
+            }
+
+            const appointment = {
+                id: generateId(),
+                type,
+                date,
+                time,
+                client,
+                description
+            };
+
+            appointments.push(appointment);
+            saveAppointments();
+            renderAgenda();
+
+            // Clear form
+            document.getElementById('appointmentDate').value = '';
+            document.getElementById('appointmentTime').value = '';
+            document.getElementById('appointmentClient').value = '';
+            document.getElementById('appointmentDesc').value = '';
+        });
+
+        // Modal
+        let selectedAppointment = null;
+
+        function showAppointmentModal(apt) {
+            selectedAppointment = apt;
+            const modal = document.getElementById('appointmentModal');
+            const details = document.getElementById('modalDetails');
+
+            const typeLabels = {
+                masterclass: 'Masterclass / Aanbod',
+                fotoshoot: 'Fotoshoot'
+            };
+
+            const dateFormatted = new Date(apt.date).toLocaleDateString('nl-NL', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            details.innerHTML = `
+                <p><strong>Type:</strong> ${typeLabels[apt.type]}</p>
+                <p><strong>Datum:</strong> ${dateFormatted}</p>
+                ${apt.time ? `<p><strong>Tijd:</strong> ${apt.time}</p>` : ''}
+                ${apt.client ? `<p><strong>Klant:</strong> ${apt.client}</p>` : ''}
+                ${apt.description ? `<p><strong>Omschrijving:</strong> ${apt.description}</p>` : ''}
+            `;
+
+            modal.classList.add('active');
+        }
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('appointmentModal').classList.remove('active');
+            selectedAppointment = null;
+        });
+
+        document.getElementById('deleteAppointment').addEventListener('click', () => {
+            if (selectedAppointment) {
+                appointments = appointments.filter(a => a.id !== selectedAppointment.id);
+                saveAppointments();
+                renderAgenda();
+                document.getElementById('appointmentModal').classList.remove('active');
+                selectedAppointment = null;
+            }
+        });
+
+        document.getElementById('appointmentModal').addEventListener('click', (e) => {
+            if (e.target.id === 'appointmentModal') {
+                document.getElementById('appointmentModal').classList.remove('active');
+                selectedAppointment = null;
+            }
+        });
+
+        // Set default date to today
+        document.getElementById('appointmentDate').valueAsDate = new Date();
+
+        // ========== GOOGLE CALENDAR TABS ==========
+        const calendarUrls = {
+            masterclass: 'https://calendar.google.com/calendar/embed?src=info%40irisvantriet.nl&ctz=Europe%2FAmsterdam&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0',
+            fotoshoot: 'https://calendar.google.com/calendar/embed?src=c_ea269198edfb5c2ff4d36214a9187971fa828a443cb09a93298250bac86dda18%40group.calendar.google.com&ctz=Europe%2FAmsterdam&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0'
+        };
+
+        document.querySelectorAll('.calendar-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.calendar-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('googleCalendarEmbed').src = calendarUrls[tab.dataset.calendar];
+            });
+        });
+
+        // ========== TASK EDIT MODAL ==========
+        let editingTask = null;
+
+        function openTaskModal(task) {
+            editingTask = task;
+            document.getElementById('editTaskContent').value = task.content;
+            document.getElementById('editTaskNotes').value = task.notes || '';
+            document.getElementById('editTaskPriority').value = task.priority;
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        document.getElementById('saveTaskBtn').addEventListener('click', () => {
+            if (editingTask) {
+                const task = tasks.find(t => t.id === editingTask.id);
+                if (task) {
+                    task.content = document.getElementById('editTaskContent').value.trim();
+                    task.notes = document.getElementById('editTaskNotes').value.trim();
+                    task.priority = document.getElementById('editTaskPriority').value;
+                    saveTasks();
+                    renderTasks();
+                }
+                document.getElementById('taskModal').classList.remove('active');
+                editingTask = null;
+            }
+        });
+
+        document.getElementById('deleteTaskBtn').addEventListener('click', () => {
+            if (editingTask) {
+                deleteTask(editingTask.id);
+                document.getElementById('taskModal').classList.remove('active');
+                editingTask = null;
+            }
+        });
+
+        document.getElementById('closeTaskModal').addEventListener('click', () => {
+            document.getElementById('taskModal').classList.remove('active');
+            editingTask = null;
+        });
+
+        document.getElementById('taskModal').addEventListener('click', (e) => {
+            if (e.target.id === 'taskModal') {
+                document.getElementById('taskModal').classList.remove('active');
+                editingTask = null;
+            }
+        });
+
+        // ========== CONTENT PLANNING WIDGET ==========
+        const contentCalendarId = 'c_8ddfb54c3f82f7be47036ac82904abba3bece664d0a523e3d299980437d5ae41@group.calendar.google.com';
+
+        // Toggle widget
+        document.getElementById('toggleWidget').addEventListener('click', () => {
+            const widget = document.getElementById('contentWidget');
+            const btn = document.getElementById('toggleWidget');
+            widget.classList.toggle('collapsed');
+            btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
+        });
+
+        // ========== STUDIO CONTENT WIDGET ==========
+        // Toggle studio widget
+        document.getElementById('toggleStudioWidget').addEventListener('click', () => {
+            const widget = document.getElementById('studioWidget');
+            const btn = document.getElementById('toggleStudioWidget');
+            widget.classList.toggle('collapsed');
+            btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
+        });
+
+        // Default names for first load
+        const defaultStudioNames = [
+            'Adrienne', 'José van Dijke', 'Liesbeth van Rijswijk', 'Alice Valk',
+            'Charlie Meijer', 'Mariëlle Boukens', 'Jacolien van Dijk', 'Evelien Lafaille',
+            'Sonja Van de Reep', 'Wilma Star', 'Henk', 'Annemieke Ruggenberg', 'Leonie', 'Zsuzsa'
+        ];
+
+        // Load names from localStorage or use defaults
+        function getStudioNames() {
+            const saved = localStorage.getItem('studioNames');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return [...defaultStudioNames];
+        }
+
+        // Save names to localStorage
+        function saveStudioNames(names) {
+            localStorage.setItem('studioNames', JSON.stringify(names));
+        }
+
+        // Render the checklist
+        function renderStudioChecklist() {
+            const names = getStudioNames();
+            const list = document.getElementById('studioChecklist');
+            const emptyMsg = document.getElementById('studioEmpty');
+
+            list.innerHTML = '';
+
+            if (names.length === 0) {
+                emptyMsg.classList.add('visible');
+            } else {
+                emptyMsg.classList.remove('visible');
+                names.forEach((name, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'studio-checklist-item';
+                    li.dataset.index = index;
+                    li.innerHTML = `
+                        <input type="checkbox" id="check-studio-${index}">
+                        <label for="check-studio-${index}">${name}</label>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.studio-checklist-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        const item = e.target.closest('.studio-checklist-item');
+                        const index = parseInt(item.dataset.index);
+                        item.classList.add('checked');
+
+                        // Remove after short delay for visual feedback
+                        setTimeout(() => {
+                            const names = getStudioNames();
+                            names.splice(index, 1);
+                            saveStudioNames(names);
+                            renderStudioChecklist();
+                        }, 300);
+                    }
+                });
+            });
+        }
+
+        // Add new name
+        function addStudioName() {
+            const input = document.getElementById('studioNameInput');
+            const name = input.value.trim();
+            if (name) {
+                const names = getStudioNames();
+                names.push(name);
+                saveStudioNames(names);
+                renderStudioChecklist();
+                input.value = '';
+            }
+        }
+
+        // Event listeners for adding names
+        document.getElementById('studioAddBtn').addEventListener('click', addStudioName);
+        document.getElementById('studioNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addStudioName();
+            }
+        });
+
+        // Initialize studio checklist
+        renderStudioChecklist();
+
+        // ========== OMZET BEREKENINGEN ==========
+        // Load saved omzet data
+        function loadOmzetData() {
+            const saved = localStorage.getItem('omzetData');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        // Save omzet data
+        function saveOmzetData(data) {
+            localStorage.setItem('omzetData', JSON.stringify(data));
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            if (amount === 0 || isNaN(amount)) return '€ 0';
+            return '€ ' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Calculate and update row
+        function calculateOmzetRow(month, bedrag) {
+            const row = document.querySelector(`tr[data-month="${month}"]`);
+            if (!row) return;
+
+            const nieuwBedrag = bedrag - 1100; // Trek 1100 IB af
+            const salaris = nieuwBedrag * 0.50;
+            const opex = nieuwBedrag * 0.25;
+            const spaar = nieuwBedrag * 0.10;
+            const belasting = nieuwBedrag * 0.10;
+            const profit = nieuwBedrag * 0.05;
+
+            row.querySelector('[data-calc="nieuw"]').textContent = bedrag > 0 ? formatCurrency(nieuwBedrag) : '';
+            row.querySelector('[data-calc="salaris"]').textContent = bedrag > 0 ? formatCurrency(salaris) : '';
+            row.querySelector('[data-calc="opex"]').textContent = bedrag > 0 ? formatCurrency(opex) : '';
+            row.querySelector('[data-calc="spaar"]').textContent = bedrag > 0 ? formatCurrency(spaar) : '';
+            row.querySelector('[data-calc="belasting"]').textContent = bedrag > 0 ? formatCurrency(belasting) : '';
+            row.querySelector('[data-calc="profit"]').textContent = bedrag > 0 ? formatCurrency(profit) : '';
+        }
+
+        // Calculate totals
+        function calculateOmzetTotals() {
+            const data = loadOmzetData();
+            let totalInkomsten = 0;
+            let totalNieuw = 0;
+            let totalSalaris = 0;
+            let totalOpex = 0;
+            let totalSpaar = 0;
+            let totalBelasting = 0;
+            let totalProfit = 0;
+
+            Object.values(data).forEach(bedrag => {
+                if (bedrag > 0) {
+                    totalInkomsten += bedrag;
+                    const nieuw = bedrag - 1100;
+                    totalNieuw += nieuw;
+                    totalSalaris += nieuw * 0.50;
+                    totalOpex += nieuw * 0.25;
+                    totalSpaar += nieuw * 0.10;
+                    totalBelasting += nieuw * 0.10;
+                    totalProfit += nieuw * 0.05;
+                }
+            });
+
+            document.getElementById('totalInkomsten').textContent = formatCurrency(totalInkomsten);
+            document.getElementById('totalNieuw').textContent = formatCurrency(totalNieuw);
+            document.getElementById('totalSalaris').textContent = formatCurrency(totalSalaris);
+            document.getElementById('totalOpex').textContent = formatCurrency(totalOpex);
+            document.getElementById('totalSpaar').textContent = formatCurrency(totalSpaar);
+            document.getElementById('totalBelasting').textContent = formatCurrency(totalBelasting);
+            document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
+        }
+
+        // Initialize omzet table
+        function initOmzetTable() {
+            const data = loadOmzetData();
+
+            // Fill in saved values and calculate
+            document.querySelectorAll('.omzet-input').forEach(input => {
+                const month = input.dataset.month;
+                if (data[month]) {
+                    input.value = data[month];
+                    calculateOmzetRow(month, data[month]);
+                }
+            });
+
+            calculateOmzetTotals();
+
+            // Add event listeners
+            document.querySelectorAll('.omzet-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const month = e.target.dataset.month;
+                    const bedrag = parseFloat(e.target.value) || 0;
+
+                    // Save
+                    const data = loadOmzetData();
+                    data[month] = bedrag;
+                    saveOmzetData(data);
+
+                    // Calculate
+                    calculateOmzetRow(month, bedrag);
+                    calculateOmzetTotals();
+                });
+            });
+        }
+
+        // Initialize on load
+        initOmzetTable();
+
+        // Load content planning from Google Calendar
+        function loadContentPlanning() {
+            const widgetBody = document.getElementById('contentWidgetBody');
+
+            // Get current week bounds
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const monday = new Date(now);
+            monday.setDate(now.getDate() + mondayOffset);
+            monday.setHours(0, 0, 0, 0);
+
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            sunday.setHours(23, 59, 59, 999);
+
+            const timeMin = monday.toISOString();
+            const timeMax = sunday.toISOString();
+
+            // Google Calendar API URL (public calendar)
+            const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(contentCalendarId)}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&orderBy=startTime&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Calendar not accessible');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.items && data.items.length > 0) {
+                        widgetBody.innerHTML = data.items.map(event => {
+                            const startDate = new Date(event.start.dateTime || event.start.date);
+                            const dateStr = startDate.toLocaleDateString('nl-NL', {
+                                weekday: 'short',
+                                day: 'numeric',
+                                month: 'short'
+                            });
+                            const timeStr = event.start.dateTime ? startDate.toLocaleTimeString('nl-NL', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) : '';
+
+                            return `
+                                <div class="content-item">
+                                    <div class="content-item-date">${dateStr}${timeStr ? ' - ' + timeStr : ''}</div>
+                                    <div class="content-item-title">${escapeHtml(event.summary || 'Geen titel')}</div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        widgetBody.innerHTML = '<div class="content-widget-empty">Geen content gepland deze week</div>';
+                    }
+                })
+                .catch(error => {
+                    console.log('Could not load content calendar:', error);
+                    // Fallback: show iframe instead
+                    widgetBody.innerHTML = `
+                        <iframe
+                            src="https://calendar.google.com/calendar/embed?src=c_8ddfb54c3f82f7be47036ac82904abba3bece664d0a523e3d299980437d5ae41%40group.calendar.google.com&ctz=Europe%2FAmsterdam&mode=AGENDA&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0"
+                            style="width:100%;height:250px;border:none;border-radius:6px;"
+                            frameborder="0"
+                            scrolling="no">
+                        </iframe>
+                    `;
+                });
+        }
+
+        // Load content planning on page load
+        loadContentPlanning();
+
+        // ========== SJABLONEN DATABASE ==========
+        let templates = JSON.parse(localStorage.getItem('kanbanTemplates')) || [];
+        let editingTemplate = null;
+        let currentTemplateFilter = 'all';
+
+        function saveTemplates() {
+            localStorage.setItem('kanbanTemplates', JSON.stringify(templates));
+        }
+
+        function renderTemplates() {
+            const grid = document.getElementById('templatesGrid');
+            const searchTerm = document.getElementById('templateSearch').value.toLowerCase();
+
+            let filtered = templates;
+
+            // Filter by category
+            if (currentTemplateFilter !== 'all') {
+                filtered = filtered.filter(t => t.category === currentTemplateFilter);
+            }
+
+            // Filter by search
+            if (searchTerm) {
+                filtered = filtered.filter(t =>
+                    t.title.toLowerCase().includes(searchTerm) ||
+                    t.content.toLowerCase().includes(searchTerm) ||
+                    (t.subject && t.subject.toLowerCase().includes(searchTerm)) ||
+                    (t.tags && t.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+                );
+            }
+
+            // Sort by updated date (newest first)
+            filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="templates-empty" style="grid-column: 1 / -1;">
+                        <div class="templates-empty-icon">📝</div>
+                        ${searchTerm || currentTemplateFilter !== 'all'
+                            ? 'Geen sjablonen gevonden'
+                            : 'Nog geen sjablonen. Maak je eerste sjabloon!'}
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(template => {
+                const preview = template.content.substring(0, 100) + (template.content.length > 100 ? '...' : '');
+                const dateStr = new Date(template.updatedAt).toLocaleDateString('nl-NL', {
+                    day: 'numeric',
+                    month: 'short'
+                });
+                const tagsHtml = template.tags && template.tags.length > 0
+                    ? template.tags.slice(0, 3).map(tag => `<span class="template-tag">${escapeHtml(tag)}</span>`).join('')
+                    : '';
+
+                return `
+                    <div class="template-card" data-id="${template.id}">
+                        <span class="template-card-date">${dateStr}</span>
+                        <span class="template-card-category ${template.category}">${getCategoryLabel(template.category)}</span>
+                        <div class="template-card-title">${escapeHtml(template.title)}</div>
+                        <div class="template-card-preview">${escapeHtml(preview)}</div>
+                        ${tagsHtml ? `<div class="template-card-tags">${tagsHtml}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers
+            grid.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const template = templates.find(t => t.id === card.dataset.id);
+                    if (template) {
+                        showTemplateViewModal(template);
+                    }
+                });
+            });
+        }
+
+        function getCategoryLabel(category) {
+            const labels = {
+                model: 'Model',
+                masterclass: 'Masterclass',
+                fotoshoot: 'Fotoshoot'
+            };
+            return labels[category] || category;
+        }
+
+        // Template filter buttons
+        document.querySelectorAll('.template-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.template-filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTemplateFilter = btn.dataset.category;
+                renderTemplates();
+            });
+        });
+
+        // Template search
+        document.getElementById('templateSearch').addEventListener('input', () => {
+            renderTemplates();
+        });
+
+        // Add new template button
+        document.getElementById('addTemplateBtn').addEventListener('click', () => {
+            editingTemplate = null;
+            document.getElementById('templateModalTitle').textContent = 'Nieuw Sjabloon';
+            document.getElementById('templateTitle').value = '';
+            document.getElementById('templateCategory').value = 'email';
+            document.getElementById('templateSubject').value = '';
+            document.getElementById('templateContent').innerHTML = '';
+            document.getElementById('templateTags').value = '';
+            document.getElementById('deleteTemplateBtn').style.display = 'none';
+            document.getElementById('templateModal').classList.add('active');
+        });
+
+        // Save template
+        document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+            const title = document.getElementById('templateTitle').value.trim();
+            const content = document.getElementById('templateContent').innerHTML.trim();
+
+            if (!title) {
+                alert('Voer een titel in');
+                return;
+            }
+            if (!content) {
+                alert('Voer inhoud in');
+                return;
+            }
+
+            const tagsInput = document.getElementById('templateTags').value;
+            const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+
+            if (editingTemplate) {
+                // Update existing
+                const template = templates.find(t => t.id === editingTemplate.id);
+                if (template) {
+                    template.title = title;
+                    template.category = document.getElementById('templateCategory').value;
+                    template.subject = document.getElementById('templateSubject').value.trim();
+                    template.content = content;
+                    template.tags = tags;
+                    template.updatedAt = new Date().toISOString();
+                }
+            } else {
+                // Create new
+                templates.push({
+                    id: generateId(),
+                    title,
+                    category: document.getElementById('templateCategory').value,
+                    subject: document.getElementById('templateSubject').value.trim(),
+                    content,
+                    tags,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+            }
+
+            saveTemplates();
+            renderTemplates();
+            document.getElementById('templateModal').classList.remove('active');
+            editingTemplate = null;
+        });
+
+        // Delete template
+        document.getElementById('deleteTemplateBtn').addEventListener('click', () => {
+            if (editingTemplate && confirm('Weet je zeker dat je dit sjabloon wilt verwijderen?')) {
+                templates = templates.filter(t => t.id !== editingTemplate.id);
+                saveTemplates();
+                renderTemplates();
+                document.getElementById('templateModal').classList.remove('active');
+                editingTemplate = null;
+            }
+        });
+
+        // Close template modal
+        document.getElementById('closeTemplateModal').addEventListener('click', () => {
+            document.getElementById('templateModal').classList.remove('active');
+            editingTemplate = null;
+        });
+
+        document.getElementById('templateModal').addEventListener('click', (e) => {
+            if (e.target.id === 'templateModal') {
+                document.getElementById('templateModal').classList.remove('active');
+                editingTemplate = null;
+            }
+        });
+
+        // Show template view modal
+        function showTemplateViewModal(template) {
+            document.getElementById('viewTemplateTitle').textContent = template.title;
+
+            const metaHtml = `
+                <span class="template-card-category ${template.category}">${getCategoryLabel(template.category)}</span>
+                ${template.tags && template.tags.length > 0
+                    ? template.tags.map(tag => `<span class="template-tag">${escapeHtml(tag)}</span>`).join('')
+                    : ''}
+            `;
+            document.getElementById('viewTemplateMeta').innerHTML = metaHtml;
+
+            document.getElementById('viewTemplateSubject').textContent = template.subject
+                ? `Onderwerp: ${template.subject}`
+                : '';
+
+            document.getElementById('viewTemplateContent').innerHTML = template.content;
+
+            // Store current template for edit/copy
+            document.getElementById('templateViewModal').dataset.templateId = template.id;
+            document.getElementById('templateViewModal').classList.add('active');
+        }
+
+        // Copy to clipboard with HTML formatting
+        document.getElementById('copyTemplateBtn').addEventListener('click', () => {
+            const templateId = document.getElementById('templateViewModal').dataset.templateId;
+            const template = templates.find(t => t.id === templateId);
+
+            if (template) {
+                const contentEl = document.getElementById('viewTemplateContent');
+                const htmlContent = template.content;
+                const plainText = contentEl.innerText;
+
+                // Copy with HTML formatting preserved (links etc)
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const textBlob = new Blob([plainText], { type: 'text/plain' });
+
+                navigator.clipboard.write([
+                    new ClipboardItem({
+                        'text/html': blob,
+                        'text/plain': textBlob
+                    })
+                ]).then(() => {
+                    const btn = document.getElementById('copyTemplateBtn');
+                    btn.textContent = 'Gekopieerd!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = 'Kopieer naar klembord';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(() => {
+                    // Fallback voor oudere browsers
+                    navigator.clipboard.writeText(plainText);
+                });
+            }
+        });
+
+        // Edit from view modal
+        document.getElementById('editTemplateFromView').addEventListener('click', () => {
+            const templateId = document.getElementById('templateViewModal').dataset.templateId;
+            const template = templates.find(t => t.id === templateId);
+
+            if (template) {
+                editingTemplate = template;
+                document.getElementById('templateModalTitle').textContent = 'Sjabloon Bewerken';
+                document.getElementById('templateTitle').value = template.title;
+                document.getElementById('templateCategory').value = template.category;
+                document.getElementById('templateSubject').value = template.subject || '';
+                document.getElementById('templateContent').innerHTML = template.content;
+                document.getElementById('templateTags').value = template.tags ? template.tags.join(', ') : '';
+                document.getElementById('deleteTemplateBtn').style.display = 'inline-block';
+
+                document.getElementById('templateViewModal').classList.remove('active');
+                document.getElementById('templateModal').classList.add('active');
+            }
+        });
+
+        // Close view modal
+        document.getElementById('closeViewModal').addEventListener('click', () => {
+            document.getElementById('templateViewModal').classList.remove('active');
+        });
+
+        document.getElementById('templateViewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'templateViewModal') {
+                document.getElementById('templateViewModal').classList.remove('active');
+            }
+        });
+
+        // ========== MODELLEN DATABASE ==========
+        let models = JSON.parse(localStorage.getItem('kanbanModels')) || [];
+        let editingModel = null;
+        let currentModelPhoto = null;
+
+        function saveModels() {
+            localStorage.setItem('kanbanModels', JSON.stringify(models));
+        }
+
+        function renderModels() {
+            const grid = document.getElementById('modelsGrid');
+            const searchTerm = document.getElementById('modelSearch').value.toLowerCase();
+
+            let filtered = models;
+
+            // Filter by search
+            if (searchTerm) {
+                filtered = filtered.filter(m =>
+                    m.name.toLowerCase().includes(searchTerm) ||
+                    (m.instagram && m.instagram.toLowerCase().includes(searchTerm)) ||
+                    (m.notes && m.notes.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Sort by name
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="models-empty">
+                        <div class="models-empty-icon">📷</div>
+                        ${searchTerm
+                            ? 'Geen modellen gevonden'
+                            : 'Nog geen modellen. Voeg je eerste model toe!'}
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(model => {
+                const instaDisplay = model.instagram ? model.instagram.replace('https://instagram.com/', '').replace('https://www.instagram.com/', '') : '';
+                return `
+                    <div class="model-card" data-id="${model.id}">
+                        <div class="model-photo">
+                            ${model.photo
+                                ? `<img src="${model.photo}" alt="${escapeHtml(model.name)}">`
+                                : '📷'}
+                        </div>
+                        <div class="model-info">
+                            <div class="model-name">${escapeHtml(model.name)}</div>
+                            ${model.age ? `<div class="model-age">${model.age} jaar</div>` : ''}
+                            <div class="model-links">
+                                ${model.instagram ? `<a href="${getInstagramUrl(model.instagram)}" target="_blank" class="model-instagram" onclick="event.stopPropagation();">@${escapeHtml(instaDisplay.replace('@', ''))}</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers
+            grid.querySelectorAll('.model-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const model = models.find(m => m.id === card.dataset.id);
+                    if (model) {
+                        showModelViewModal(model);
+                    }
+                });
+            });
+        }
+
+        function getInstagramUrl(input) {
+            if (input.startsWith('http')) return input;
+            const username = input.replace('@', '');
+            return `https://instagram.com/${username}`;
+        }
+
+        // Model search
+        document.getElementById('modelSearch').addEventListener('input', () => {
+            renderModels();
+        });
+
+        // Add new model button
+        document.getElementById('addModelBtn').addEventListener('click', () => {
+            editingModel = null;
+            currentModelPhoto = null;
+            document.getElementById('modelModalTitle').textContent = 'Nieuw Model';
+            document.getElementById('modelName').value = '';
+            document.getElementById('modelAge').value = '';
+            document.getElementById('modelInstagram').value = '';
+            document.getElementById('modelEmail').value = '';
+            document.getElementById('modelPhone').value = '';
+            document.getElementById('modelNotes').value = '';
+            document.getElementById('deleteModelBtn').style.display = 'none';
+
+            // Reset photo upload area
+            const uploadArea = document.getElementById('photoUploadArea');
+            uploadArea.classList.remove('has-photo');
+            uploadArea.innerHTML = `
+                <div class="photo-upload-text">
+                    <span>Klik om foto te uploaden</span><br>
+                    of sleep een foto hierheen
+                </div>
+            `;
+
+            document.getElementById('modelModal').classList.add('active');
+        });
+
+        // Photo upload handling
+        const photoUploadArea = document.getElementById('photoUploadArea');
+        const modelPhotoInput = document.getElementById('modelPhotoInput');
+
+        photoUploadArea.addEventListener('click', () => {
+            modelPhotoInput.click();
+        });
+
+        photoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            photoUploadArea.style.borderColor = 'var(--teal)';
+        });
+
+        photoUploadArea.addEventListener('dragleave', () => {
+            photoUploadArea.style.borderColor = 'var(--grey-light)';
+        });
+
+        photoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            photoUploadArea.style.borderColor = 'var(--grey-light)';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handlePhotoUpload(file);
+            }
+        });
+
+        modelPhotoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handlePhotoUpload(file);
+            }
+        });
+
+        function handlePhotoUpload(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentModelPhoto = e.target.result;
+                photoUploadArea.classList.add('has-photo');
+                photoUploadArea.innerHTML = `<img src="${currentModelPhoto}" alt="Model foto">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Save model
+        document.getElementById('saveModelBtn').addEventListener('click', () => {
+            const name = document.getElementById('modelName').value.trim();
+
+            if (!name) {
+                alert('Voer een naam in');
+                return;
+            }
+
+            if (editingModel) {
+                // Update existing
+                const model = models.find(m => m.id === editingModel.id);
+                if (model) {
+                    model.name = name;
+                    model.age = document.getElementById('modelAge').value || null;
+                    model.instagram = document.getElementById('modelInstagram').value.trim() || null;
+                    model.email = document.getElementById('modelEmail').value.trim() || null;
+                    model.phone = document.getElementById('modelPhone').value.trim() || null;
+                    model.notes = document.getElementById('modelNotes').value.trim() || null;
+                    if (currentModelPhoto !== null) {
+                        model.photo = currentModelPhoto;
+                    }
+                    model.updatedAt = new Date().toISOString();
+                }
+            } else {
+                // Create new
+                models.push({
+                    id: generateId(),
+                    name,
+                    age: document.getElementById('modelAge').value || null,
+                    instagram: document.getElementById('modelInstagram').value.trim() || null,
+                    email: document.getElementById('modelEmail').value.trim() || null,
+                    phone: document.getElementById('modelPhone').value.trim() || null,
+                    notes: document.getElementById('modelNotes').value.trim() || null,
+                    photo: currentModelPhoto,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+            }
+
+            saveModels();
+            renderModels();
+            document.getElementById('modelModal').classList.remove('active');
+            editingModel = null;
+            currentModelPhoto = null;
+        });
+
+        // Delete model
+        document.getElementById('deleteModelBtn').addEventListener('click', () => {
+            if (editingModel && confirm('Weet je zeker dat je dit model wilt verwijderen?')) {
+                models = models.filter(m => m.id !== editingModel.id);
+                saveModels();
+                renderModels();
+                document.getElementById('modelModal').classList.remove('active');
+                editingModel = null;
+            }
+        });
+
+        // Close model modal
+        document.getElementById('closeModelModal').addEventListener('click', () => {
+            document.getElementById('modelModal').classList.remove('active');
+            editingModel = null;
+            currentModelPhoto = null;
+        });
+
+        document.getElementById('modelModal').addEventListener('click', (e) => {
+            if (e.target.id === 'modelModal') {
+                document.getElementById('modelModal').classList.remove('active');
+                editingModel = null;
+                currentModelPhoto = null;
+            }
+        });
+
+        // Show model view modal
+        function showModelViewModal(model) {
+            document.getElementById('viewModelName').textContent = model.name;
+
+            const photoContainer = document.getElementById('viewModelPhoto');
+            if (model.photo) {
+                photoContainer.innerHTML = `<img src="${model.photo}" alt="${escapeHtml(model.name)}">`;
+            } else {
+                photoContainer.innerHTML = `<div class="model-view-photo-placeholder">📷</div>`;
+            }
+
+            let detailsHtml = '';
+            if (model.age) {
+                detailsHtml += `<p><strong>Leeftijd:</strong> ${model.age} jaar</p>`;
+            }
+            if (model.instagram) {
+                const instaDisplay = model.instagram.replace('https://instagram.com/', '').replace('https://www.instagram.com/', '').replace('@', '');
+                detailsHtml += `<p><strong>Instagram:</strong> <a href="${getInstagramUrl(model.instagram)}" target="_blank">@${escapeHtml(instaDisplay)}</a></p>`;
+            }
+            if (model.email) {
+                detailsHtml += `<p><strong>Email:</strong> <a href="mailto:${escapeHtml(model.email)}">${escapeHtml(model.email)}</a></p>`;
+            }
+            if (model.phone) {
+                detailsHtml += `<p><strong>Telefoon:</strong> <a href="tel:${model.phone}">${escapeHtml(model.phone)}</a></p>`;
+            }
+            if (model.notes) {
+                detailsHtml += `<p><strong>Notities:</strong></p><div class="model-view-notes">${escapeHtml(model.notes)}</div>`;
+            }
+
+            document.getElementById('viewModelDetails').innerHTML = detailsHtml || '<p>Geen extra informatie</p>';
+
+            document.getElementById('modelViewModal').dataset.modelId = model.id;
+            document.getElementById('modelViewModal').classList.add('active');
+        }
+
+        // Edit from view modal
+        document.getElementById('editModelFromView').addEventListener('click', () => {
+            const modelId = document.getElementById('modelViewModal').dataset.modelId;
+            const model = models.find(m => m.id === modelId);
+
+            if (model) {
+                editingModel = model;
+                currentModelPhoto = model.photo || null;
+                document.getElementById('modelModalTitle').textContent = 'Model Bewerken';
+                document.getElementById('modelName').value = model.name;
+                document.getElementById('modelAge').value = model.age || '';
+                document.getElementById('modelInstagram').value = model.instagram || '';
+                document.getElementById('modelEmail').value = model.email || '';
+                document.getElementById('modelPhone').value = model.phone || '';
+                document.getElementById('modelNotes').value = model.notes || '';
+                document.getElementById('deleteModelBtn').style.display = 'inline-block';
+
+                // Set photo
+                const uploadArea = document.getElementById('photoUploadArea');
+                if (model.photo) {
+                    uploadArea.classList.add('has-photo');
+                    uploadArea.innerHTML = `<img src="${model.photo}" alt="Model foto">`;
+                } else {
+                    uploadArea.classList.remove('has-photo');
+                    uploadArea.innerHTML = `
+                        <div class="photo-upload-text">
+                            <span>Klik om foto te uploaden</span><br>
+                            of sleep een foto hierheen
+                        </div>
+                    `;
+                }
+
+                document.getElementById('modelViewModal').classList.remove('active');
+                document.getElementById('modelModal').classList.add('active');
+            }
+        });
+
+        // Close model view modal
+        document.getElementById('closeModelViewModal').addEventListener('click', () => {
+            document.getElementById('modelViewModal').classList.remove('active');
+        });
+
+        document.getElementById('modelViewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'modelViewModal') {
+                document.getElementById('modelViewModal').classList.remove('active');
+            }
+        });
+
+        // ========== MASTERCLASS AANMELDINGEN ==========
+        let masterclasses = JSON.parse(localStorage.getItem('kanbanMasterclasses')) || [];
+        let editingMasterclass = null;
+        let editingParticipant = null;
+        let currentMasterclassId = null;
+        let masterclassFilter = 'all';
+
+        function saveMasterclasses() {
+            localStorage.setItem('kanbanMasterclasses', JSON.stringify(masterclasses));
+        }
+
+        function renderMasterclasses() {
+            const list = document.getElementById('masterclassList');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let filtered = masterclasses;
+
+            // Filter
+            if (masterclassFilter === 'upcoming') {
+                filtered = filtered.filter(m => new Date(m.date) >= today);
+            } else if (masterclassFilter === 'past') {
+                filtered = filtered.filter(m => new Date(m.date) < today);
+            }
+
+            // Sort by date (newest first for upcoming, oldest first for past)
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                if (masterclassFilter === 'past') {
+                    return dateB - dateA;
+                }
+                return dateA - dateB;
+            });
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="masterclass-empty">
+                        <div class="masterclass-empty-icon">🎓</div>
+                        ${masterclassFilter !== 'all'
+                            ? 'Geen masterclasses gevonden'
+                            : 'Nog geen masterclasses. Maak je eerste masterclass aan!'}
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(mc => {
+                const participants = mc.participants || [];
+                const maxParticipants = mc.maxParticipants || 6;
+                const infoSentCount = participants.filter(p => p.infoSent).length;
+                const invoiceSentCount = participants.filter(p => p.invoiceSent).length;
+                const isFull = participants.length >= maxParticipants;
+                const dateFormatted = new Date(mc.date).toLocaleDateString('nl-NL', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                let participantsHtml = '';
+                if (participants.length === 0) {
+                    participantsHtml = '<div class="no-participants">Nog geen deelnemers</div>';
+                } else {
+                    participantsHtml = `
+                        <table class="participants-table">
+                            <thead>
+                                <tr>
+                                    <th>Naam</th>
+                                    <th>Email</th>
+                                    <th class="checkbox-cell">Info mail</th>
+                                    <th class="checkbox-cell">Factuur</th>
+                                    <th>Notities</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${participants.map(p => `
+                                    <tr data-participant-id="${p.id}">
+                                        <td>${escapeHtml(p.name)}</td>
+                                        <td class="participant-email"><a href="mailto:${escapeHtml(p.email)}">${escapeHtml(p.email)}</a></td>
+                                        <td class="checkbox-cell">
+                                            <input type="checkbox" class="status-checkbox" data-field="infoSent" ${p.infoSent ? 'checked' : ''}>
+                                        </td>
+                                        <td class="checkbox-cell">
+                                            <input type="checkbox" class="status-checkbox" data-field="invoiceSent" ${p.invoiceSent ? 'checked' : ''}>
+                                        </td>
+                                        <td class="participant-notes-cell">${p.notes ? escapeHtml(p.notes) : ''}</td>
+                                        <td>
+                                            <div class="participant-actions">
+                                                <button class="btn-edit-participant" title="Bewerken">✏️</button>
+                                                <button class="btn-delete-participant" title="Verwijderen">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                return `
+                    <div class="masterclass-card ${isFull ? 'is-full' : ''}" data-id="${mc.id}">
+                        <div class="masterclass-card-header">
+                            <div>
+                                <div class="masterclass-card-title">${escapeHtml(mc.title)}</div>
+                                <div class="masterclass-card-date">${dateFormatted}</div>
+                            </div>
+                            <div class="masterclass-card-stats">
+                                <span class="${isFull ? 'full-indicator' : ''}">${participants.length}/${maxParticipants} deelnemers</span>
+                                <span>📧 ${infoSentCount}/${participants.length}</span>
+                                <span>💰 ${invoiceSentCount}/${participants.length}</span>
+                            </div>
+                        </div>
+                        <div class="masterclass-card-body">
+                            <div class="masterclass-card-actions">
+                                <button class="btn-add-participant" ${isFull ? 'disabled' : ''}>+ Deelnemer toevoegen</button>
+                                <button class="btn-edit-masterclass">Masterclass bewerken</button>
+                            </div>
+                            ${mc.model ? `<div class="masterclass-model-note"><strong>Model:</strong> ${escapeHtml(mc.model)}</div>` : ''}
+                            ${participantsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add event listeners
+            list.querySelectorAll('.masterclass-card-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    header.parentElement.classList.toggle('expanded');
+                });
+            });
+
+            list.querySelectorAll('.btn-add-participant').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const mcId = btn.closest('.masterclass-card').dataset.id;
+                    openParticipantModal(mcId);
+                });
+            });
+
+            list.querySelectorAll('.btn-edit-masterclass').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const mcId = btn.closest('.masterclass-card').dataset.id;
+                    const mc = masterclasses.find(m => m.id === mcId);
+                    if (mc) openEditMasterclassModal(mc);
+                });
+            });
+
+            list.querySelectorAll('.status-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    e.stopPropagation();
+                    const row = checkbox.closest('tr');
+                    const participantId = row.dataset.participantId;
+                    const mcId = checkbox.closest('.masterclass-card').dataset.id;
+                    const field = checkbox.dataset.field;
+
+                    const mc = masterclasses.find(m => m.id === mcId);
+                    if (mc) {
+                        const participant = mc.participants.find(p => p.id === participantId);
+                        if (participant) {
+                            participant[field] = checkbox.checked;
+                            saveMasterclasses();
+                            renderMasterclasses();
+                        }
+                    }
+                });
+            });
+
+            list.querySelectorAll('.btn-edit-participant').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const row = btn.closest('tr');
+                    const participantId = row.dataset.participantId;
+                    const mcId = btn.closest('.masterclass-card').dataset.id;
+
+                    const mc = masterclasses.find(m => m.id === mcId);
+                    if (mc) {
+                        const participant = mc.participants.find(p => p.id === participantId);
+                        if (participant) {
+                            openEditParticipantModal(mcId, participant);
+                        }
+                    }
+                });
+            });
+
+            list.querySelectorAll('.btn-delete-participant').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('Weet je zeker dat je deze deelnemer wilt verwijderen?')) {
+                        const row = btn.closest('tr');
+                        const participantId = row.dataset.participantId;
+                        const mcId = btn.closest('.masterclass-card').dataset.id;
+
+                        const mc = masterclasses.find(m => m.id === mcId);
+                        if (mc) {
+                            mc.participants = mc.participants.filter(p => p.id !== participantId);
+                            saveMasterclasses();
+                            renderMasterclasses();
+                        }
+                    }
+                });
+            });
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.masterclass-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.masterclass-filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                masterclassFilter = btn.dataset.filter;
+                renderMasterclasses();
+            });
+        });
+
+        // Add new masterclass button
+        document.getElementById('addMasterclassBtn').addEventListener('click', () => {
+            editingMasterclass = null;
+            document.getElementById('masterclassModalTitle').textContent = 'Nieuwe Masterclass';
+            document.getElementById('masterclassTitle').value = '';
+            document.getElementById('masterclassDate').value = '';
+            document.getElementById('masterclassMaxParticipants').value = '6';
+            document.getElementById('masterclassModel').value = '';
+            document.getElementById('deleteMasterclassBtn').style.display = 'none';
+            document.getElementById('masterclassModal').classList.add('active');
+        });
+
+        function openEditMasterclassModal(mc) {
+            editingMasterclass = mc;
+            document.getElementById('masterclassModalTitle').textContent = 'Masterclass Bewerken';
+            document.getElementById('masterclassTitle').value = mc.title;
+            document.getElementById('masterclassDate').value = mc.date;
+            document.getElementById('masterclassMaxParticipants').value = mc.maxParticipants || 6;
+            document.getElementById('masterclassModel').value = mc.model || '';
+            document.getElementById('deleteMasterclassBtn').style.display = 'inline-block';
+            document.getElementById('masterclassModal').classList.add('active');
+        }
+
+        // Save masterclass
+        document.getElementById('saveMasterclassBtn').addEventListener('click', () => {
+            const title = document.getElementById('masterclassTitle').value.trim();
+            const date = document.getElementById('masterclassDate').value;
+            const maxParticipants = parseInt(document.getElementById('masterclassMaxParticipants').value) || 6;
+            const model = document.getElementById('masterclassModel').value.trim();
+
+            if (!title) {
+                alert('Voer een titel in');
+                return;
+            }
+            if (!date) {
+                alert('Selecteer een datum');
+                return;
+            }
+
+            if (editingMasterclass) {
+                const mc = masterclasses.find(m => m.id === editingMasterclass.id);
+                if (mc) {
+                    mc.title = title;
+                    mc.date = date;
+                    mc.maxParticipants = maxParticipants;
+                    mc.model = model;
+                    mc.updatedAt = new Date().toISOString();
+                }
+            } else {
+                masterclasses.push({
+                    id: generateId(),
+                    title,
+                    date,
+                    maxParticipants,
+                    model,
+                    participants: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+            }
+
+            saveMasterclasses();
+            renderMasterclasses();
+            document.getElementById('masterclassModal').classList.remove('active');
+            editingMasterclass = null;
+        });
+
+        // Delete masterclass
+        document.getElementById('deleteMasterclassBtn').addEventListener('click', () => {
+            if (editingMasterclass && confirm('Weet je zeker dat je deze masterclass wilt verwijderen? Alle deelnemers worden ook verwijderd.')) {
+                masterclasses = masterclasses.filter(m => m.id !== editingMasterclass.id);
+                saveMasterclasses();
+                renderMasterclasses();
+                document.getElementById('masterclassModal').classList.remove('active');
+                editingMasterclass = null;
+            }
+        });
+
+        // Close masterclass modal
+        document.getElementById('closeMasterclassModal').addEventListener('click', () => {
+            document.getElementById('masterclassModal').classList.remove('active');
+            editingMasterclass = null;
+        });
+
+        document.getElementById('masterclassModal').addEventListener('click', (e) => {
+            if (e.target.id === 'masterclassModal') {
+                document.getElementById('masterclassModal').classList.remove('active');
+                editingMasterclass = null;
+            }
+        });
+
+        // Participant modal functions
+        function openParticipantModal(mcId) {
+            currentMasterclassId = mcId;
+            editingParticipant = null;
+            document.getElementById('participantModalTitle').textContent = 'Deelnemer Toevoegen';
+            document.getElementById('participantName').value = '';
+            document.getElementById('participantEmail').value = '';
+            document.getElementById('participantInfoSent').checked = false;
+            document.getElementById('participantInvoiceSent').checked = false;
+            document.getElementById('participantNotes').value = '';
+            document.getElementById('deleteParticipantBtn').style.display = 'none';
+            document.getElementById('participantModal').classList.add('active');
+        }
+
+        function openEditParticipantModal(mcId, participant) {
+            currentMasterclassId = mcId;
+            editingParticipant = participant;
+            document.getElementById('participantModalTitle').textContent = 'Deelnemer Bewerken';
+            document.getElementById('participantName').value = participant.name;
+            document.getElementById('participantEmail').value = participant.email;
+            document.getElementById('participantInfoSent').checked = participant.infoSent || false;
+            document.getElementById('participantInvoiceSent').checked = participant.invoiceSent || false;
+            document.getElementById('participantNotes').value = participant.notes || '';
+            document.getElementById('deleteParticipantBtn').style.display = 'inline-block';
+            document.getElementById('participantModal').classList.add('active');
+        }
+
+        // Save participant
+        document.getElementById('saveParticipantBtn').addEventListener('click', () => {
+            const name = document.getElementById('participantName').value.trim();
+            const email = document.getElementById('participantEmail').value.trim();
+            const infoSent = document.getElementById('participantInfoSent').checked;
+            const invoiceSent = document.getElementById('participantInvoiceSent').checked;
+            const notes = document.getElementById('participantNotes').value.trim();
+
+            if (!name) {
+                alert('Voer een naam in');
+                return;
+            }
+            if (!email) {
+                alert('Voer een email in');
+                return;
+            }
+
+            const mc = masterclasses.find(m => m.id === currentMasterclassId);
+            if (!mc) return;
+
+            if (editingParticipant) {
+                const participant = mc.participants.find(p => p.id === editingParticipant.id);
+                if (participant) {
+                    participant.name = name;
+                    participant.email = email;
+                    participant.infoSent = infoSent;
+                    participant.invoiceSent = invoiceSent;
+                    participant.notes = notes;
+                }
+            } else {
+                if (!mc.participants) mc.participants = [];
+                mc.participants.push({
+                    id: generateId(),
+                    name,
+                    email,
+                    infoSent,
+                    invoiceSent,
+                    notes
+                });
+            }
+
+            saveMasterclasses();
+            renderMasterclasses();
+            document.getElementById('participantModal').classList.remove('active');
+            editingParticipant = null;
+            currentMasterclassId = null;
+        });
+
+        // Delete participant
+        document.getElementById('deleteParticipantBtn').addEventListener('click', () => {
+            if (editingParticipant && confirm('Weet je zeker dat je deze deelnemer wilt verwijderen?')) {
+                const mc = masterclasses.find(m => m.id === currentMasterclassId);
+                if (mc) {
+                    mc.participants = mc.participants.filter(p => p.id !== editingParticipant.id);
+                    saveMasterclasses();
+                    renderMasterclasses();
+                }
+                document.getElementById('participantModal').classList.remove('active');
+                editingParticipant = null;
+                currentMasterclassId = null;
+            }
+        });
+
+        // Close participant modal
+        document.getElementById('closeParticipantModal').addEventListener('click', () => {
+            document.getElementById('participantModal').classList.remove('active');
+            editingParticipant = null;
+            currentMasterclassId = null;
+        });
+
+        document.getElementById('participantModal').addEventListener('click', (e) => {
+            if (e.target.id === 'participantModal') {
+                document.getElementById('participantModal').classList.remove('active');
+                editingParticipant = null;
+                currentMasterclassId = null;
+            }
+        });
+    </script>
+</body>
+</html>
