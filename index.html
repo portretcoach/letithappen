@@ -735,21 +735,20 @@
             font-size: 0.9rem;
         }
 
-        /* Studio Content Widget */
-        .studio-widget {
+        /* Content Planner Widget */
+        .content-planner-widget {
             position: fixed;
-            top: 300px;
+            top: 400px;
             right: 30px;
-            width: 280px;
+            width: 320px;
             background: var(--beige);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             z-index: 100;
             overflow: hidden;
-            max-height: calc(100vh - 320px);
         }
 
-        .studio-widget-header {
+        .content-planner-header {
             background: var(--terracotta);
             color: white;
             padding: 12px 15px;
@@ -758,13 +757,18 @@
             align-items: center;
         }
 
-        .studio-widget-header h3 {
+        .content-planner-header h3 {
             font-size: 0.95rem;
             font-weight: 500;
             margin: 0;
         }
 
-        .studio-widget-toggle {
+        .content-planner-week {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .content-planner-toggle {
             background: none;
             border: none;
             color: white;
@@ -774,60 +778,121 @@
             line-height: 1;
         }
 
-        .studio-widget-body {
-            max-height: 250px;
+        .content-planner-body {
+            max-height: 400px;
             overflow-y: auto;
             padding: 10px;
         }
 
-        .studio-widget.collapsed .studio-widget-body {
+        .content-planner-widget.collapsed .content-planner-body {
             display: none;
         }
 
-        .studio-checklist {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .studio-checklist-item {
+        .content-planner-nav {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background: white;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--terracotta);
-            transition: opacity 0.2s;
+            margin-bottom: 10px;
+            padding: 5px 0;
         }
 
-        .studio-checklist-item:last-child {
+        .content-planner-nav button {
+            background: var(--grey-light);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--dark);
+        }
+
+        .content-planner-nav button:hover {
+            background: var(--teal);
+            color: white;
+        }
+
+        .content-planner-nav span {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .content-post {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--terracotta);
+        }
+
+        .content-post:last-child {
             margin-bottom: 0;
         }
 
-        .studio-checklist-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 12px;
-            cursor: pointer;
-            accent-color: var(--terracotta);
+        .content-post-day {
+            font-size: 0.75rem;
+            color: var(--terracotta);
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
         }
 
-        .studio-checklist-item label {
-            flex: 1;
-            font-size: 0.9rem;
+        .content-post-pijler {
+            font-size: 0.7rem;
+            background: var(--grey-light);
             color: var(--dark);
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .content-post-caption {
+            font-size: 0.85rem;
+            color: var(--dark);
+            line-height: 1.4;
+            max-height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .content-post-caption.expanded {
+            max-height: none;
+        }
+
+        .content-post-expand {
+            font-size: 0.75rem;
+            color: var(--teal);
             cursor: pointer;
+            margin-top: 4px;
+            display: inline-block;
         }
 
-        .studio-checklist-item.checked label {
-            text-decoration: line-through;
+        .content-post-format {
+            font-size: 0.7rem;
             color: var(--dark-soft);
+            margin-top: 6px;
+            font-style: italic;
         }
 
-        .studio-checklist-item.checked {
-            opacity: 0.7;
+        .content-post-copy {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 8px;
         }
+
+        .content-post-copy:hover {
+            background: var(--teal-light);
+        }
+
+        .content-post.portfolio { border-left-color: var(--gold); }
+        .content-post.achter-de-schermen { border-left-color: var(--teal); }
+        .content-post.filosofie { border-left-color: var(--terracotta); }
+        .content-post.herkenning { border-left-color: #8B5CF6; }
 
         .studio-add-form {
             display: flex;
@@ -2200,7 +2265,7 @@
             }
 
             .content-widget,
-            .studio-widget {
+            .content-planner-widget {
                 display: none;
             }
 
@@ -2297,20 +2362,24 @@
         </div>
     </div>
 
-    <!-- Studio Content Widget -->
-    <div class="studio-widget" id="studioWidget">
-        <div class="studio-widget-header">
-            <h3>Studio Content</h3>
-            <button class="studio-widget-toggle" id="toggleStudioWidget">−</button>
-        </div>
-        <div class="studio-widget-body" id="studioWidgetBody">
-            <div class="studio-add-form">
-                <input type="text" id="studioNameInput" placeholder="Naam toevoegen...">
-                <button id="studioAddBtn">+</button>
+    <!-- Content Planner Widget -->
+    <div class="content-planner-widget" id="contentPlannerWidget">
+        <div class="content-planner-header">
+            <div>
+                <h3>Content Planner</h3>
+                <div class="content-planner-week" id="contentPlannerWeekLabel">Week 1 van 12</div>
             </div>
-            <ul class="studio-checklist" id="studioChecklist">
-            </ul>
-            <div class="studio-empty" id="studioEmpty">Geen namen in de lijst</div>
+            <button class="content-planner-toggle" id="toggleContentPlanner">−</button>
+        </div>
+        <div class="content-planner-body" id="contentPlannerBody">
+            <div class="content-planner-nav">
+                <button id="contentPrevWeek">← Vorige</button>
+                <span id="contentWeekDisplay">Week 1</span>
+                <button id="contentNextWeek">Volgende →</button>
+            </div>
+            <div id="contentPlannerPosts">
+                <!-- Posts worden hier gegenereerd -->
+            </div>
         </div>
     </div>
 
@@ -3483,103 +3552,455 @@
             btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
         });
 
-        // ========== STUDIO CONTENT WIDGET ==========
-        // Toggle studio widget
-        document.getElementById('toggleStudioWidget').addEventListener('click', () => {
-            const widget = document.getElementById('studioWidget');
-            const btn = document.getElementById('toggleStudioWidget');
+        // ========== CONTENT PLANNER WIDGET ==========
+        // 12-weken contentplanning kinderportretten
+        const contentPlanningData = [
+            { // Week 1
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Filosofie & persoonlijk',
+                        caption: `Ik wilde helemaal geen kinderen fotograferen.
+
+Dat dacht ik althans. Tot ik voor het eerst écht keek. Voorbij de lach, voorbij de pose. Naar de zachtheid in een blik. De ernst van een kind dat even helemaal in zichzelf is.
+
+Daar veranderde alles.
+
+Ik ben Iris. In mijn studio maak ik verstilde kinderportretten die doen denken aan schilderijen van oude meesters. Geen geforceerde lach. Geen drukte.
+
+Wel de puurheid van wie je kind nu is.
+
+Meer weten? Link in bio.`,
+                        formaat: 'Carousel (3-4 beelden)',
+                        type: 'filosofie'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Portfolio',
+                        caption: `Eén blik.
+Meer is niet nodig.
+
+#kinderportret #portretfotografie #fineartportrait`,
+                        formaat: 'Enkele foto (vierkant)',
+                        type: 'portfolio'
+                    }
+                ]
+            },
+            { // Week 2
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Herkenning & connectie',
+                        caption: `Je telefoon staat vol foto's van je kind.
+
+Honderden. Misschien duizenden.
+
+Maar is er één bij die echt vangt wat jij in je kind ziet?
+
+Die blik. Die eigenwijsheid. Die zachtheid die er alleen is als niemand kijkt.
+
+Dat is precies wat ik zoek in mijn portretten. Niet het lachje voor de camera. Maar de essentie.
+
+Benieuwd hoe dat eruitziet? Link in bio.`,
+                        formaat: 'Carousel (portret + detail)',
+                        type: 'herkenning'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Achter de schermen',
+                        caption: `Mijn studio is rustig.
+
+Geen achtergrondmuziek, geen haast, geen drukte. Kinderen voelen dat. En in die rust komt het echte naar boven.
+
+Ik regisseer waar nodig. En laat los waar het mag.
+
+Dat is waar de mooiste beelden ontstaan.`,
+                        formaat: 'Video/Reel (15-30 sec)',
+                        type: 'achter-de-schermen'
+                    }
+                ]
+            },
+            { // Week 3
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Portfolio',
+                        caption: `Soms zegt een portret meer dan duizend foto's.
+
+Dit is er één.
+
+Een fine-art print op museum-kwaliteit papier. Gemaakt om generaties mee te gaan.`,
+                        formaat: 'Enkele foto (4:5)',
+                        type: 'portfolio'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Filosofie & persoonlijk',
+                        caption: `Kinderen veranderen zo snel.
+
+De blik van vandaag is morgen alweer anders. Die zachtheid, die eigenwijsheid, die puurheid — het is er nu. En straks is het een herinnering.
+
+Daarom maak ik wat ik maak.
+
+Niet om een moment vast te leggen. Maar om te laten zien wie je kind nu is. In al zijn of haar puurheid.
+
+Voordat de tijd weer doorrent.`,
+                        formaat: 'Enkele foto + tekst',
+                        type: 'filosofie'
+                    }
+                ]
+            },
+            { // Week 4
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Achter de schermen',
+                        caption: `Hoe ziet een sessie bij mij eruit?
+
+We beginnen met een gesprek. Ik wil weten wie je kind is — niet alleen hoe het eruitziet, maar wat het bijzonder maakt.
+
+Dan, in de studio, nemen we de tijd. Geen haast, geen druk. Ik zoek naar dat ene moment waarop je kind helemaal zichzelf is.
+
+Want dáár zit het portret.`,
+                        formaat: 'Carousel (4-5 slides)',
+                        type: 'achter-de-schermen'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Portfolio',
+                        caption: `Puur.
+
+Meer woorden heeft dit portret niet nodig.`,
+                        formaat: 'Enkele foto (groot)',
+                        type: 'portfolio'
+                    }
+                ]
+            },
+            { // Week 5
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Herkenning & connectie',
+                        caption: `Ze groeien zo snel.
+
+Je weet het. Je voelt het. Elke fase is mooi, maar ook voorbij voor je het weet.
+
+Wat als je dit moment kunt vasthouden?
+
+Niet op je telefoon. Maar aan je muur. Als een dagelijkse herinnering aan wie je kind nu is.
+
+Dat is wat een kinderportret doet. Het bewaart wat anders verdwijnt.`,
+                        formaat: 'Carousel (portret + detail)',
+                        type: 'herkenning'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Filosofie & persoonlijk',
+                        caption: `Ik fotografeer niet om het moment vast te leggen.
+
+Ik fotografeer om te laten zien wie je kind werkelijk is.
+
+Er is een verschil.
+
+Een moment is vluchtig. Een portret raakt de kern. Het gaat voorbij de lach, voorbij de pose. Naar iets dat er altijd al was.
+
+Dat is wat ik zoek. In elk kind opnieuw.`,
+                        formaat: 'Carousel of tekst-visual',
+                        type: 'filosofie'
+                    }
+                ]
+            },
+            { // Week 6
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Portfolio',
+                        caption: `Warme tinten. Zacht licht. Alle afleidingen weg.
+
+Wat overblijft is de essentie.
+
+Dit portret hangt nu aan de muur bij een gezin dat elke dag even stilstaat bij dit beeld.`,
+                        formaat: 'Enkele foto (4:5)',
+                        type: 'portfolio'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Herkenning & connectie',
+                        caption: `"Maar mijn kind zit nooit stil."
+
+Dat hoor ik vaak. En ik snap het.
+
+Maar juist daarom werk ik zoals ik werk. Rustig. Zonder druk. Met de tijd en de ruimte die een kind nodig heeft.
+
+Kinderen hoeven bij mij niet stil te zitten. Ze hoeven alleen zichzelf te zijn.
+
+De rest is aan mij.`,
+                        formaat: 'Carousel of Reel',
+                        type: 'herkenning'
+                    }
+                ]
+            },
+            { // Week 7
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Filosofie & persoonlijk',
+                        caption: `Een portret aan de muur zegt iets tegen je kind.
+
+Het zegt: jij bent belangrijk. Jij bent gezien. Jij hoort hier.
+
+Het is een daad van liefde. Vastgelegd.
+
+En over twintig jaar kijkt je kind ernaar en weet: ik was de moeite waard.`,
+                        formaat: 'Carousel (portret + detail)',
+                        type: 'filosofie'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Portfolio',
+                        caption: `De gelaagdheid van een kind.
+
+Eigenwijsheid. Zachtheid. Kracht.
+
+Alles in één blik.`,
+                        formaat: 'Enkele foto',
+                        type: 'portfolio'
+                    }
+                ]
+            },
+            { // Week 8
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Filosofie & persoonlijk',
+                        caption: `Ik maak geen foto's.
+
+Ik maak portretten.
+
+Er zit een wereld van verschil tussen. Een foto vangt een moment. Een portret vangt een mens.
+
+Mijn werk gaat niet over stilzitten en lachen. Het gaat over kijken. Echt kijken. Naar de kern van wie een kind is.
+
+Dat is mijn vak. En het is te mooi om niet te delen.`,
+                        formaat: 'Carousel (tekst + portretten)',
+                        type: 'filosofie'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Achter de schermen',
+                        caption: `Van beeld naar muur.
+
+Elk portret dat mijn studio verlaat, is een fine-art print op museum-kwaliteit papier. Of ingelijst in een lijst die recht doet aan het beeld.
+
+Geen digitaal bestand dat op een harde schijf verdwijnt. Maar iets tastbaars. Iets dat je elke dag ziet.
+
+Gemaakt om te blijven.`,
+                        formaat: 'Carousel (proces)',
+                        type: 'achter-de-schermen'
+                    }
+                ]
+            },
+            { // Week 9
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Portfolio',
+                        caption: `Verstild.
+
+Als een schilderij uit een andere tijd.
+
+Maar dan van jouw kind. Nu.`,
+                        formaat: 'Enkele foto',
+                        type: 'portfolio'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Herkenning & connectie',
+                        caption: `Je hebt vast weleens een fotoshoot gedaan met je kind.
+
+Misschien was het leuk. Misschien was het chaotisch. Misschien kijk je naar de foto's en denk je: mooi, maar...
+
+Er mist iets.
+
+De foto lacht. Maar het kind erachter is niet helemaal zichtbaar.
+
+Bij mij gaat het niet om de lach. Het gaat om de blik daarachter.`,
+                        formaat: 'Carousel of tekst',
+                        type: 'herkenning'
+                    }
+                ]
+            },
+            { // Week 10
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Achter de schermen',
+                        caption: `Het begint altijd met een gesprek.
+
+Niet over poses of outfits. Maar over wie je kind is. Wat maakt hem of haar bijzonder? Waar gaat ze van op in haar eigen wereld?
+
+Want dat is wat ik wil vangen.
+
+Niet een lachje. Maar een heel mens.`,
+                        formaat: 'Video/Reel of carousel',
+                        type: 'achter-de-schermen'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Portfolio',
+                        caption: `Dit beeld hangt aan de muur.
+
+Elke ochtend ziet deze moeder haar dochter — precies zoals ze is. De zachtheid. De ernst. De schoonheid van een kind dat even helemaal in zichzelf is.
+
+Dat is wat een portret doet.
+
+Het brengt je elke dag terug naar dit moment.`,
+                        formaat: 'Enkele foto (4:5)',
+                        type: 'portfolio'
+                    }
+                ]
+            },
+            { // Week 11
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Filosofie & persoonlijk',
+                        caption: `Een mooi plaatje was niet meer genoeg.
+
+Ik wilde meer. Meer diepgang. Meer betekenis. Meer van wat er écht is.
+
+Daarom fotografeer ik zoals ik fotografeer. Verstild. Met aandacht voor wat onder de oppervlakte zit.
+
+Niet het masker. Maar het kind erachter.`,
+                        formaat: 'Carousel of tekst',
+                        type: 'filosofie'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Herkenning & connectie',
+                        caption: `Wist je dat een portret aan de muur iets doet met een kind?
+
+Het zegt: jij wordt gezien. Jij bent belangrijk genoeg om aan de muur te hangen.
+
+Het is zo simpel. En zo krachtig.
+
+Geen speelgoed, geen cadeautje. Maar een beeld dat zegt: dit ben jij. En jij bent prachtig.`,
+                        formaat: 'Carousel (portret + uitleg)',
+                        type: 'herkenning'
+                    }
+                ]
+            },
+            { // Week 12
+                posts: [
+                    {
+                        dag: 'Maandag',
+                        pijler: 'Herkenning & connectie',
+                        caption: `Twaalf weken geleden deelde ik mijn eerste kinderportret op dit account.
+
+Sindsdien heb ik laten zien wat ik maak. Hoe ik werk. En waarom.
+
+Dit is waar ik voor sta. Verstilde kinderportretten die de essentie vangen.
+
+Eén portret. Voor aan je muur. Voor altijd.
+
+Benieuwd? Stuur me een berichtje.`,
+                        formaat: 'Carousel (beste werk)',
+                        type: 'herkenning'
+                    },
+                    {
+                        dag: 'Donderdag',
+                        pijler: 'Achter de schermen',
+                        caption: `Dit is mijn studio.
+
+Hier ontstaat het. In de rust, in het licht, in de aandacht.
+
+En ik nodig je uit om het te komen ervaren.
+
+Stuur me een berichtje. Dan plannen we een kennismaking.`,
+                        formaat: 'Video/Reel of foto',
+                        type: 'achter-de-schermen'
+                    }
+                ]
+            }
+        ];
+
+        // Content Planner state
+        let contentPlannerWeek = 1;
+        const contentPlannerStartDate = new Date('2025-02-10'); // Startdatum van de planning
+
+        // Calculate current week based on date
+        function calculateCurrentContentWeek() {
+            const now = new Date();
+            const diffTime = now - contentPlannerStartDate;
+            const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+            // Cyclus van 12 weken
+            return (diffWeeks % 12) + 1;
+        }
+
+        // Toggle content planner widget
+        document.getElementById('toggleContentPlanner').addEventListener('click', () => {
+            const widget = document.getElementById('contentPlannerWidget');
+            const btn = document.getElementById('toggleContentPlanner');
             widget.classList.toggle('collapsed');
             btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
         });
 
-        // Default names for first load
-        const defaultStudioNames = [
-            'Adrienne', 'José van Dijke', 'Liesbeth van Rijswijk', 'Alice Valk',
-            'Charlie Meijer', 'Mariëlle Boukens', 'Jacolien van Dijk', 'Evelien Lafaille',
-            'Sonja Van de Reep', 'Wilma Star', 'Henk', 'Annemieke Ruggenberg', 'Leonie', 'Zsuzsa'
-        ];
+        // Render content planner
+        function renderContentPlanner() {
+            const weekData = contentPlanningData[contentPlannerWeek - 1];
+            const postsContainer = document.getElementById('contentPlannerPosts');
+            const weekDisplay = document.getElementById('contentWeekDisplay');
+            const weekLabel = document.getElementById('contentPlannerWeekLabel');
 
-        // Load names from localStorage or use defaults
-        function getStudioNames() {
-            const saved = localStorage.getItem('studioNames');
-            if (saved) {
-                return JSON.parse(saved);
-            }
-            return [...defaultStudioNames];
+            weekDisplay.textContent = `Week ${contentPlannerWeek}`;
+            weekLabel.textContent = `Week ${contentPlannerWeek} van 12`;
+
+            postsContainer.innerHTML = weekData.posts.map((post, index) => `
+                <div class="content-post ${post.type}">
+                    <div class="content-post-day">${post.dag}</div>
+                    <div class="content-post-pijler">${post.pijler}</div>
+                    <div class="content-post-caption" id="caption-${contentPlannerWeek}-${index}">${post.caption.replace(/\n/g, '<br>')}</div>
+                    <span class="content-post-expand" onclick="toggleCaption(${contentPlannerWeek}, ${index})">Meer lezen...</span>
+                    <div class="content-post-format">${post.formaat}</div>
+                    <button class="content-post-copy" onclick="copyContentCaption(${contentPlannerWeek - 1}, ${index})">Kopieer tekst</button>
+                </div>
+            `).join('');
         }
 
-        // Save names to localStorage
-        function saveStudioNames(names) {
-            localStorage.setItem('studioNames', JSON.stringify(names));
+        // Toggle caption expand
+        function toggleCaption(week, index) {
+            const caption = document.getElementById(`caption-${week}-${index}`);
+            const expandBtn = caption.nextElementSibling;
+            caption.classList.toggle('expanded');
+            expandBtn.textContent = caption.classList.contains('expanded') ? 'Minder lezen' : 'Meer lezen...';
         }
 
-        // Render the checklist
-        function renderStudioChecklist() {
-            const names = getStudioNames();
-            const list = document.getElementById('studioChecklist');
-            const emptyMsg = document.getElementById('studioEmpty');
-
-            list.innerHTML = '';
-
-            if (names.length === 0) {
-                emptyMsg.classList.add('visible');
-            } else {
-                emptyMsg.classList.remove('visible');
-                names.forEach((name, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'studio-checklist-item';
-                    li.dataset.index = index;
-                    li.innerHTML = `
-                        <input type="checkbox" id="check-studio-${index}">
-                        <label for="check-studio-${index}">${name}</label>
-                    `;
-                    list.appendChild(li);
-                });
-            }
-
-            // Add event listeners to checkboxes
-            document.querySelectorAll('.studio-checklist-item input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        const item = e.target.closest('.studio-checklist-item');
-                        const index = parseInt(item.dataset.index);
-                        item.classList.add('checked');
-
-                        // Remove after short delay for visual feedback
-                        setTimeout(() => {
-                            const names = getStudioNames();
-                            names.splice(index, 1);
-                            saveStudioNames(names);
-                            renderStudioChecklist();
-                        }, 300);
-                    }
-                });
+        // Copy caption to clipboard
+        function copyContentCaption(weekIndex, postIndex) {
+            const caption = contentPlanningData[weekIndex].posts[postIndex].caption;
+            navigator.clipboard.writeText(caption).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Gekopieerd!';
+                setTimeout(() => {
+                    btn.textContent = 'Kopieer tekst';
+                }, 2000);
             });
         }
 
-        // Add new name
-        function addStudioName() {
-            const input = document.getElementById('studioNameInput');
-            const name = input.value.trim();
-            if (name) {
-                const names = getStudioNames();
-                names.push(name);
-                saveStudioNames(names);
-                renderStudioChecklist();
-                input.value = '';
-            }
-        }
-
-        // Event listeners for adding names
-        document.getElementById('studioAddBtn').addEventListener('click', addStudioName);
-        document.getElementById('studioNameInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addStudioName();
-            }
+        // Navigation
+        document.getElementById('contentPrevWeek').addEventListener('click', () => {
+            contentPlannerWeek = contentPlannerWeek > 1 ? contentPlannerWeek - 1 : 12;
+            renderContentPlanner();
         });
 
-        // Initialize studio checklist
-        renderStudioChecklist();
+        document.getElementById('contentNextWeek').addEventListener('click', () => {
+            contentPlannerWeek = contentPlannerWeek < 12 ? contentPlannerWeek + 1 : 1;
+            renderContentPlanner();
+        });
+
+        // Initialize with current week
+        contentPlannerWeek = calculateCurrentContentWeek();
+        renderContentPlanner();
 
         // ========== OMZET BEREKENINGEN ==========
         // Load saved omzet data
