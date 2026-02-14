@@ -1700,6 +1700,51 @@
             background: #7d4f45;
         }
 
+        .btn-add-waitlist {
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn-add-waitlist:hover {
+            background: var(--gold-hover);
+        }
+
+        .waitlist-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed var(--gold);
+        }
+
+        .waitlist-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .waitlist-table {
+            background: rgba(210, 165, 18, 0.05);
+        }
+
+        .btn-promote-waitlist {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 2px 5px;
+        }
+
+        .btn-promote-waitlist:hover {
+            background: rgba(38, 77, 94, 0.1);
+            border-radius: 4px;
+        }
+
         .btn-edit-masterclass {
             background: transparent;
             border: 1px solid var(--teal);
@@ -2478,7 +2523,7 @@
                 <label>Email *</label>
                 <input type="email" id="participantEmail" placeholder="email@voorbeeld.nl">
             </div>
-            <div class="form-group">
+            <div class="form-group participant-checkbox-group">
                 <label>Status</label>
                 <div class="checkbox-group">
                     <label>
@@ -4054,6 +4099,35 @@
                     `;
                 }
 
+                // Wachtlijst
+                const waitlist = mc.waitlist || [];
+                let waitlistHtml = '';
+                if (waitlist.length > 0) {
+                    waitlistHtml = `
+                        <div class="waitlist-section">
+                            <div class="waitlist-header">Wachtlijst (${waitlist.length})</div>
+                            <table class="participants-table waitlist-table">
+                                <tbody>
+                                    ${waitlist.map(w => `
+                                        <tr data-waitlist-id="${w.id}">
+                                            <td>${escapeHtml(w.name)}</td>
+                                            <td class="participant-email"><a href="mailto:${escapeHtml(w.email)}">${escapeHtml(w.email)}</a></td>
+                                            <td class="participant-notes-cell">${w.notes ? escapeHtml(w.notes) : ''}</td>
+                                            <td>
+                                                <div class="participant-actions">
+                                                    <button class="btn-promote-waitlist" title="Promoveer naar deelnemer">⬆️</button>
+                                                    <button class="btn-edit-waitlist" title="Bewerken">✏️</button>
+                                                    <button class="btn-delete-waitlist" title="Verwijderen">🗑️</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+
                 return `
                     <div class="masterclass-card ${isFull ? 'is-full' : ''}" data-id="${mc.id}">
                         <div class="masterclass-card-header">
@@ -4069,11 +4143,13 @@
                         </div>
                         <div class="masterclass-card-body">
                             <div class="masterclass-card-actions">
-                                <button class="btn-add-participant" ${isFull ? 'disabled' : ''}>+ Deelnemer toevoegen</button>
-                                <button class="btn-edit-masterclass">Masterclass bewerken</button>
+                                <button class="btn-add-participant" ${isFull ? 'disabled' : ''}>+ Deelnemer</button>
+                                <button class="btn-add-waitlist">+ Wachtlijst</button>
+                                <button class="btn-edit-masterclass">Bewerken</button>
                             </div>
                             ${mc.model ? `<div class="masterclass-model-note"><strong>Model:</strong> ${escapeHtml(mc.model)}</div>` : ''}
                             ${participantsHtml}
+                            ${waitlistHtml}
                         </div>
                     </div>
                 `;
@@ -4151,6 +4227,85 @@
                         const mc = masterclasses.find(m => m.id === mcId);
                         if (mc) {
                             mc.participants = mc.participants.filter(p => p.id !== participantId);
+                            saveMasterclasses();
+                            renderMasterclasses();
+                        }
+                    }
+                });
+            });
+
+            // Wachtlijst event listeners
+            list.querySelectorAll('.btn-add-waitlist').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const mcId = btn.closest('.masterclass-card').dataset.id;
+                    openWaitlistModal(mcId);
+                });
+            });
+
+            list.querySelectorAll('.btn-promote-waitlist').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const row = btn.closest('tr');
+                    const waitlistId = row.dataset.waitlistId;
+                    const mcId = btn.closest('.masterclass-card').dataset.id;
+
+                    const mc = masterclasses.find(m => m.id === mcId);
+                    if (mc) {
+                        const waitlistPerson = mc.waitlist.find(w => w.id === waitlistId);
+                        if (waitlistPerson) {
+                            // Check if there's room
+                            const maxParticipants = mc.maxParticipants || 6;
+                            if (mc.participants.length >= maxParticipants) {
+                                alert('De masterclass is vol. Verwijder eerst een deelnemer.');
+                                return;
+                            }
+                            // Move to participants
+                            mc.participants.push({
+                                id: generateId(),
+                                name: waitlistPerson.name,
+                                email: waitlistPerson.email,
+                                notes: waitlistPerson.notes,
+                                infoSent: false,
+                                invoiceSent: false
+                            });
+                            // Remove from waitlist
+                            mc.waitlist = mc.waitlist.filter(w => w.id !== waitlistId);
+                            saveMasterclasses();
+                            renderMasterclasses();
+                        }
+                    }
+                });
+            });
+
+            list.querySelectorAll('.btn-edit-waitlist').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const row = btn.closest('tr');
+                    const waitlistId = row.dataset.waitlistId;
+                    const mcId = btn.closest('.masterclass-card').dataset.id;
+
+                    const mc = masterclasses.find(m => m.id === mcId);
+                    if (mc) {
+                        const waitlistPerson = mc.waitlist.find(w => w.id === waitlistId);
+                        if (waitlistPerson) {
+                            openEditWaitlistModal(mcId, waitlistPerson);
+                        }
+                    }
+                });
+            });
+
+            list.querySelectorAll('.btn-delete-waitlist').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('Weet je zeker dat je deze persoon van de wachtlijst wilt verwijderen?')) {
+                        const row = btn.closest('tr');
+                        const waitlistId = row.dataset.waitlistId;
+                        const mcId = btn.closest('.masterclass-card').dataset.id;
+
+                        const mc = masterclasses.find(m => m.id === mcId);
+                        if (mc) {
+                            mc.waitlist = mc.waitlist.filter(w => w.id !== waitlistId);
                             saveMasterclasses();
                             renderMasterclasses();
                         }
@@ -4261,9 +4416,13 @@
         });
 
         // Participant modal functions
+        let isWaitlistMode = false;
+        let editingWaitlistPerson = null;
+
         function openParticipantModal(mcId) {
             currentMasterclassId = mcId;
             editingParticipant = null;
+            isWaitlistMode = false;
             document.getElementById('participantModalTitle').textContent = 'Deelnemer Toevoegen';
             document.getElementById('participantName').value = '';
             document.getElementById('participantEmail').value = '';
@@ -4271,12 +4430,15 @@
             document.getElementById('participantInvoiceSent').checked = false;
             document.getElementById('participantNotes').value = '';
             document.getElementById('deleteParticipantBtn').style.display = 'none';
+            // Show checkboxes for regular participant
+            document.querySelectorAll('.participant-checkbox-group').forEach(el => el.style.display = 'block');
             document.getElementById('participantModal').classList.add('active');
         }
 
         function openEditParticipantModal(mcId, participant) {
             currentMasterclassId = mcId;
             editingParticipant = participant;
+            isWaitlistMode = false;
             document.getElementById('participantModalTitle').textContent = 'Deelnemer Bewerken';
             document.getElementById('participantName').value = participant.name;
             document.getElementById('participantEmail').value = participant.email;
@@ -4284,10 +4446,42 @@
             document.getElementById('participantInvoiceSent').checked = participant.invoiceSent || false;
             document.getElementById('participantNotes').value = participant.notes || '';
             document.getElementById('deleteParticipantBtn').style.display = 'inline-block';
+            document.querySelectorAll('.participant-checkbox-group').forEach(el => el.style.display = 'block');
             document.getElementById('participantModal').classList.add('active');
         }
 
-        // Save participant
+        function openWaitlistModal(mcId) {
+            currentMasterclassId = mcId;
+            editingParticipant = null;
+            editingWaitlistPerson = null;
+            isWaitlistMode = true;
+            document.getElementById('participantModalTitle').textContent = 'Wachtlijst Toevoegen';
+            document.getElementById('participantName').value = '';
+            document.getElementById('participantEmail').value = '';
+            document.getElementById('participantInfoSent').checked = false;
+            document.getElementById('participantInvoiceSent').checked = false;
+            document.getElementById('participantNotes').value = '';
+            document.getElementById('deleteParticipantBtn').style.display = 'none';
+            // Hide checkboxes for waitlist
+            document.querySelectorAll('.participant-checkbox-group').forEach(el => el.style.display = 'none');
+            document.getElementById('participantModal').classList.add('active');
+        }
+
+        function openEditWaitlistModal(mcId, waitlistPerson) {
+            currentMasterclassId = mcId;
+            editingParticipant = null;
+            editingWaitlistPerson = waitlistPerson;
+            isWaitlistMode = true;
+            document.getElementById('participantModalTitle').textContent = 'Wachtlijst Bewerken';
+            document.getElementById('participantName').value = waitlistPerson.name;
+            document.getElementById('participantEmail').value = waitlistPerson.email;
+            document.getElementById('participantNotes').value = waitlistPerson.notes || '';
+            document.getElementById('deleteParticipantBtn').style.display = 'inline-block';
+            document.querySelectorAll('.participant-checkbox-group').forEach(el => el.style.display = 'none');
+            document.getElementById('participantModal').classList.add('active');
+        }
+
+        // Save participant or waitlist
         document.getElementById('saveParticipantBtn').addEventListener('click', () => {
             const name = document.getElementById('participantName').value.trim();
             const email = document.getElementById('participantEmail').value.trim();
@@ -4307,38 +4501,72 @@
             const mc = masterclasses.find(m => m.id === currentMasterclassId);
             if (!mc) return;
 
-            if (editingParticipant) {
-                const participant = mc.participants.find(p => p.id === editingParticipant.id);
-                if (participant) {
-                    participant.name = name;
-                    participant.email = email;
-                    participant.infoSent = infoSent;
-                    participant.invoiceSent = invoiceSent;
-                    participant.notes = notes;
+            if (isWaitlistMode) {
+                // Wachtlijst modus
+                if (!mc.waitlist) mc.waitlist = [];
+
+                if (editingWaitlistPerson) {
+                    const person = mc.waitlist.find(w => w.id === editingWaitlistPerson.id);
+                    if (person) {
+                        person.name = name;
+                        person.email = email;
+                        person.notes = notes;
+                    }
+                } else {
+                    mc.waitlist.push({
+                        id: generateId(),
+                        name,
+                        email,
+                        notes
+                    });
                 }
             } else {
-                if (!mc.participants) mc.participants = [];
-                mc.participants.push({
-                    id: generateId(),
-                    name,
-                    email,
-                    infoSent,
-                    invoiceSent,
-                    notes
-                });
+                // Deelnemer modus
+                if (editingParticipant) {
+                    const participant = mc.participants.find(p => p.id === editingParticipant.id);
+                    if (participant) {
+                        participant.name = name;
+                        participant.email = email;
+                        participant.infoSent = infoSent;
+                        participant.invoiceSent = invoiceSent;
+                        participant.notes = notes;
+                    }
+                } else {
+                    if (!mc.participants) mc.participants = [];
+                    mc.participants.push({
+                        id: generateId(),
+                        name,
+                        email,
+                        infoSent,
+                        invoiceSent,
+                        notes
+                    });
+                }
             }
 
             saveMasterclasses();
             renderMasterclasses();
             document.getElementById('participantModal').classList.remove('active');
             editingParticipant = null;
+            editingWaitlistPerson = null;
+            isWaitlistMode = false;
             currentMasterclassId = null;
         });
 
-        // Delete participant
+        // Delete participant or waitlist person
         document.getElementById('deleteParticipantBtn').addEventListener('click', () => {
-            if (editingParticipant && confirm('Weet je zeker dat je deze deelnemer wilt verwijderen?')) {
-                const mc = masterclasses.find(m => m.id === currentMasterclassId);
+            const mc = masterclasses.find(m => m.id === currentMasterclassId);
+
+            if (isWaitlistMode && editingWaitlistPerson && confirm('Weet je zeker dat je deze persoon van de wachtlijst wilt verwijderen?')) {
+                if (mc) {
+                    mc.waitlist = mc.waitlist.filter(w => w.id !== editingWaitlistPerson.id);
+                    saveMasterclasses();
+                    renderMasterclasses();
+                }
+                document.getElementById('participantModal').classList.remove('active');
+                editingWaitlistPerson = null;
+                isWaitlistMode = false;
+            } else if (editingParticipant && confirm('Weet je zeker dat je deze deelnemer wilt verwijderen?')) {
                 if (mc) {
                     mc.participants = mc.participants.filter(p => p.id !== editingParticipant.id);
                     saveMasterclasses();
