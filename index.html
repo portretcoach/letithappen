@@ -471,33 +471,6 @@
             font-weight: 500;
         }
 
-        .calendar-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .calendar-tab {
-            padding: 8px 16px;
-            border: 2px solid var(--grey-light);
-            background: transparent;
-            color: var(--dark);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .calendar-tab:hover {
-            border-color: var(--teal);
-        }
-
-        .calendar-tab.active {
-            background: var(--teal);
-            border-color: var(--teal);
-            color: white;
-        }
-
         .calendar-embed {
             width: 100%;
             height: 500px;
@@ -561,31 +534,6 @@
             padding: 12px;
             margin-top: 10px;
         }
-
-        /* Appointment legend */
-        .appointment-legend {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--beige);
-            font-size: 0.9rem;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-        }
-
-        .legend-color.masterclass { background: var(--gold); }
-        .legend-color.fotoshoot { background: var(--teal); }
 
         /* Appointment modal */
         .modal-overlay {
@@ -1890,7 +1838,7 @@
             opacity: 0.5;
         }
 
-        /* Masterclass Modal */
+        /* Studio Modal */
         .masterclass-modal {
             max-width: 450px;
             width: 95%;
@@ -2066,11 +2014,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .appointment-legend {
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
             .templates-grid {
                 grid-template-columns: 1fr;
             }
@@ -2160,7 +2103,7 @@
         <button class="view-btn" data-view="agenda">Agenda</button>
         <button class="view-btn" data-view="sjablonen">Sjablonen</button>
         <button class="view-btn" data-view="modellen">Modellen</button>
-        <button class="view-btn" data-view="masterclass">Masterclass</button>
+        <button class="view-btn" data-view="masterclass">Studio</button>
         <button class="view-btn" data-view="omzet">Omzet</button>
     </div>
 
@@ -2244,10 +2187,6 @@
         <!-- Google Calendar Section -->
         <div class="google-calendar-section">
             <h3>Google Agenda</h3>
-            <div class="calendar-tabs">
-                <button class="calendar-tab active" data-calendar="masterclass">Masterclasses</button>
-                <button class="calendar-tab" data-calendar="fotoshoot">Fotoshoots</button>
-            </div>
             <iframe
                 id="googleCalendarEmbed"
                 class="calendar-embed"
@@ -2255,17 +2194,6 @@
                 frameborder="0"
                 scrolling="no">
             </iframe>
-        </div>
-
-        <div class="appointment-legend">
-            <div class="legend-item">
-                <div class="legend-color masterclass"></div>
-                <span>Masterclass / Aanbod</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color fotoshoot"></div>
-                <span>Fotoshoot</span>
-            </div>
         </div>
 
         <div class="agenda-header">
@@ -2287,7 +2215,7 @@
                 <div class="form-group">
                     <label>Type</label>
                     <select id="appointmentType">
-                        <option value="masterclass">Masterclass / Aanbod</option>
+                        <option value="masterclass">Studio / Aanbod</option>
                         <option value="fotoshoot">Fotoshoot</option>
                     </select>
                 </div>
@@ -2322,7 +2250,7 @@
         <div class="templates-filter">
             <button class="template-filter-btn active" data-category="all">Alles</button>
             <button class="template-filter-btn" data-category="model">Model</button>
-            <button class="template-filter-btn" data-category="masterclass">Masterclass</button>
+            <button class="template-filter-btn" data-category="masterclass">Studio</button>
             <button class="template-filter-btn" data-category="fotoshoot">Fotoshoot</button>
         </div>
 
@@ -2347,7 +2275,7 @@
                 <label>Categorie</label>
                 <select id="templateCategory">
                     <option value="model">Model</option>
-                    <option value="masterclass">Masterclass</option>
+                    <option value="masterclass">Studio</option>
                     <option value="fotoshoot">Fotoshoot</option>
                 </select>
             </div>
@@ -2465,11 +2393,11 @@
         </div>
     </div>
 
-    <!-- Masterclass Aanmeldingen View -->
+    <!-- Studio Aanmeldingen View -->
     <div class="masterclass-container">
         <div class="masterclass-header">
-            <h2>Masterclass Aanmeldingen</h2>
-            <button class="btn-add-masterclass" id="addMasterclassBtn">+ Nieuwe Masterclass</button>
+            <h2>Studio Aanmeldingen</h2>
+            <button class="btn-add-masterclass" id="addMasterclassBtn">+ Nieuwe Sessie</button>
         </div>
 
         <div class="masterclass-filter">
@@ -2483,10 +2411,10 @@
         </div>
     </div>
 
-    <!-- Masterclass Modal (Add/Edit) -->
+    <!-- Studio Modal (Add/Edit) -->
     <div class="modal-overlay" id="masterclassModal">
         <div class="modal masterclass-modal">
-            <h3 id="masterclassModalTitle">Nieuwe Masterclass</h3>
+            <h3 id="masterclassModalTitle">Nieuwe Sessie</h3>
             <div class="form-group">
                 <label>Titel *</label>
                 <input type="text" id="masterclassTitle" placeholder="Bijv. Portretfotografie Basis">
@@ -3204,7 +3132,7 @@
             const details = document.getElementById('modalDetails');
 
             const typeLabels = {
-                masterclass: 'Masterclass / Aanbod',
+                masterclass: 'Studio / Aanbod',
                 fotoshoot: 'Fotoshoot'
             };
 
@@ -3250,20 +3178,6 @@
 
         // Set default date to today
         document.getElementById('appointmentDate').valueAsDate = new Date();
-
-        // ========== GOOGLE CALENDAR TABS ==========
-        const calendarUrls = {
-            masterclass: 'https://calendar.google.com/calendar/embed?src=info%40irisvantriet.nl&ctz=Europe%2FAmsterdam&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0',
-            fotoshoot: 'https://calendar.google.com/calendar/embed?src=c_ea269198edfb5c2ff4d36214a9187971fa828a443cb09a93298250bac86dda18%40group.calendar.google.com&ctz=Europe%2FAmsterdam&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0'
-        };
-
-        document.querySelectorAll('.calendar-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.calendar-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById('googleCalendarEmbed').src = calendarUrls[tab.dataset.calendar];
-            });
-        });
 
         // ========== TASK EDIT MODAL ==========
         let editingTask = null;
@@ -3498,7 +3412,7 @@
         function getCategoryLabel(category) {
             const labels = {
                 model: 'Model',
-                masterclass: 'Masterclass',
+                masterclass: 'Studio',
                 fotoshoot: 'Fotoshoot'
             };
             return labels[category] || category;
@@ -4038,8 +3952,8 @@
                     <div class="masterclass-empty">
                         <div class="masterclass-empty-icon">🎓</div>
                         ${masterclassFilter !== 'all'
-                            ? 'Geen masterclasses gevonden'
-                            : 'Nog geen masterclasses. Maak je eerste masterclass aan!'}
+                            ? 'Geen sessies gevonden'
+                            : 'Nog geen sessies. Maak je eerste sessie aan!'}
                     </div>
                 `;
                 return;
@@ -4257,7 +4171,7 @@
                             // Check if there's room
                             const maxParticipants = mc.maxParticipants || 6;
                             if (mc.participants.length >= maxParticipants) {
-                                alert('De masterclass is vol. Verwijder eerst een deelnemer.');
+                                alert('De sessie is vol. Verwijder eerst een deelnemer.');
                                 return;
                             }
                             // Move to participants
@@ -4327,7 +4241,7 @@
         // Add new masterclass button
         document.getElementById('addMasterclassBtn').addEventListener('click', () => {
             editingMasterclass = null;
-            document.getElementById('masterclassModalTitle').textContent = 'Nieuwe Masterclass';
+            document.getElementById('masterclassModalTitle').textContent = 'Nieuwe Sessie';
             document.getElementById('masterclassTitle').value = '';
             document.getElementById('masterclassDate').value = '';
             document.getElementById('masterclassMaxParticipants').value = '6';
@@ -4338,7 +4252,7 @@
 
         function openEditMasterclassModal(mc) {
             editingMasterclass = mc;
-            document.getElementById('masterclassModalTitle').textContent = 'Masterclass Bewerken';
+            document.getElementById('masterclassModalTitle').textContent = 'Sessie Bewerken';
             document.getElementById('masterclassTitle').value = mc.title;
             document.getElementById('masterclassDate').value = mc.date;
             document.getElementById('masterclassMaxParticipants').value = mc.maxParticipants || 6;
@@ -4393,7 +4307,7 @@
 
         // Delete masterclass
         document.getElementById('deleteMasterclassBtn').addEventListener('click', () => {
-            if (editingMasterclass && confirm('Weet je zeker dat je deze masterclass wilt verwijderen? Alle deelnemers worden ook verwijderd.')) {
+            if (editingMasterclass && confirm('Weet je zeker dat je deze sessie wilt verwijderen? Alle deelnemers worden ook verwijderd.')) {
                 masterclasses = masterclasses.filter(m => m.id !== editingMasterclass.id);
                 saveMasterclasses();
                 renderMasterclasses();
