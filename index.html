@@ -1980,7 +1980,7 @@
         <button class="view-btn" data-view="agenda">Agenda</button>
         <button class="view-btn" data-view="sjablonen">Sjablonen</button>
         <button class="view-btn" data-view="modellen">Modellen</button>
-        <button class="view-btn" data-view="masterclass">Studio</button>
+        <button class="view-btn" data-view="masterclass">Masterclasses</button>
         <button class="view-btn" data-view="omzet">Omzet</button>
     </div>
 
@@ -2084,7 +2084,7 @@
         <div class="templates-filter">
             <button class="template-filter-btn active" data-category="all">Alles</button>
             <button class="template-filter-btn" data-category="model">Model</button>
-            <button class="template-filter-btn" data-category="masterclass">Studio</button>
+            <button class="template-filter-btn" data-category="masterclass">Masterclass</button>
             <button class="template-filter-btn" data-category="fotoshoot">Fotoshoot</button>
         </div>
 
@@ -2109,7 +2109,7 @@
                 <label>Categorie</label>
                 <select id="templateCategory">
                     <option value="model">Model</option>
-                    <option value="masterclass">Studio</option>
+                    <option value="masterclass">Masterclass</option>
                     <option value="fotoshoot">Fotoshoot</option>
                 </select>
             </div>
@@ -2230,7 +2230,7 @@
     <!-- Studio Aanmeldingen View -->
     <div class="masterclass-container">
         <div class="masterclass-header">
-            <h2>Studio Aanmeldingen</h2>
+            <h2>Masterclasses</h2>
             <button class="btn-add-masterclass" id="addMasterclassBtn">+ Nieuwe Sessie</button>
         </div>
 
@@ -3099,7 +3099,7 @@
         function getCategoryLabel(category) {
             const labels = {
                 model: 'Model',
-                masterclass: 'Studio',
+                masterclass: 'Masterclass',
                 fotoshoot: 'Fotoshoot'
             };
             return labels[category] || category;
