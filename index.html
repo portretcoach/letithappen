@@ -41,14 +41,45 @@
             padding: 20px;
         }
 
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
         h1 {
             text-align: center;
             color: var(--beige);
-            margin-bottom: 30px;
             font-size: 2.5rem;
             font-weight: 300;
             letter-spacing: 2px;
             text-transform: uppercase;
+        }
+
+        .data-actions {
+            position: absolute;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .data-actions button,
+        .data-actions label {
+            background: rgba(251,250,248,0.15);
+            color: var(--beige);
+            border: 1px solid rgba(251,250,248,0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s;
+        }
+
+        .data-actions button:hover,
+        .data-actions label:hover {
+            background: rgba(251,250,248,0.25);
         }
 
         .board {
@@ -1933,7 +1964,16 @@
     </style>
 </head>
 <body>
-    <h1>Let It Happen</h1>
+    <div class="app-header">
+        <h1>Let It Happen</h1>
+        <div class="data-actions">
+            <button id="exportDataBtn" title="Exporteer alle data als backup">⬇ Export</button>
+            <label id="importDataBtn" title="Importeer data uit backup">
+                ⬆ Import
+                <input type="file" id="importFileInput" accept=".json" style="display:none;">
+            </label>
+        </div>
+    </div>
 
     <div class="view-toggle">
         <button class="view-btn active" data-view="kanban">Kanban</button>
@@ -2912,6 +2952,66 @@
 
         // Initialize on load
         initOmzetTable();
+
+        // ========== EXPORT / IMPORT ==========
+        document.getElementById('exportDataBtn').addEventListener('click', () => {
+            const data = {
+                exportDate: new Date().toISOString(),
+                version: 1,
+                kanbanTasks: localStorage.getItem('kanbanTasks'),
+                kanbanCurrentProject: localStorage.getItem('kanbanCurrentProject'),
+                kanbanAppointments: localStorage.getItem('kanbanAppointments'),
+                kanbanTemplates: localStorage.getItem('kanbanTemplates'),
+                kanbanModels: localStorage.getItem('kanbanModels'),
+                kanbanMasterclasses: localStorage.getItem('kanbanMasterclasses'),
+                omzetData: localStorage.getItem('omzetData'),
+                studioNames: localStorage.getItem('studioNames'),
+                studioChecklist: localStorage.getItem('studioChecklist'),
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const datum = new Date().toISOString().slice(0, 10);
+            a.href = url;
+            a.download = `letithappen-backup-${datum}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('importFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+
+                    if (!confirm('Weet je zeker dat je de data wilt importeren? Je huidige data wordt overschreven.')) {
+                        return;
+                    }
+
+                    if (data.kanbanTasks) localStorage.setItem('kanbanTasks', data.kanbanTasks);
+                    if (data.kanbanCurrentProject) localStorage.setItem('kanbanCurrentProject', data.kanbanCurrentProject);
+                    if (data.kanbanAppointments) localStorage.setItem('kanbanAppointments', data.kanbanAppointments);
+                    if (data.kanbanTemplates) localStorage.setItem('kanbanTemplates', data.kanbanTemplates);
+                    if (data.kanbanModels) localStorage.setItem('kanbanModels', data.kanbanModels);
+                    if (data.kanbanMasterclasses) localStorage.setItem('kanbanMasterclasses', data.kanbanMasterclasses);
+                    if (data.omzetData) localStorage.setItem('omzetData', data.omzetData);
+                    if (data.studioNames) localStorage.setItem('studioNames', data.studioNames);
+                    if (data.studioChecklist) localStorage.setItem('studioChecklist', data.studioChecklist);
+
+                    alert('Data succesvol geïmporteerd! De pagina wordt herladen.');
+                    location.reload();
+                } catch (err) {
+                    alert('Fout bij importeren. Controleer of het bestand een geldige backup is.');
+                }
+            };
+            reader.readAsText(file);
+            // Reset input zodat je hetzelfde bestand opnieuw kunt importeren
+            e.target.value = '';
+        });
 
         // ========== SJABLONEN DATABASE ==========
         let templates = JSON.parse(localStorage.getItem('kanbanTemplates')) || [];
