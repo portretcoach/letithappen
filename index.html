@@ -1961,9 +1961,132 @@
                 overflow-y: auto;
             }
         }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--teal);
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-card {
+            background: var(--beige);
+            padding: 40px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .login-card h1 {
+            color: var(--teal);
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        .login-card p {
+            color: var(--dark-soft);
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--grey-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            color: var(--dark);
+        }
+
+        .login-card input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-card button:hover {
+            background: var(--teal-light);
+        }
+
+        .login-error {
+            color: #c0392b;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            min-height: 20px;
+        }
+
+        #logoutBtn {
+            background: transparent;
+            border: 1px solid rgba(251, 250, 248, 0.3);
+            color: var(--beige);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        #logoutBtn:hover {
+            background: rgba(251, 250, 248, 0.1);
+        }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyB9b6xXHncA9FXcn6L2YmT8ipzBjQGuwnY",
+            authDomain: "co-ouderschap-dashboard.firebaseapp.com",
+            databaseURL: "https://co-ouderschap-dashboard-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "co-ouderschap-dashboard",
+            storageBucket: "co-ouderschap-dashboard.firebasestorage.app",
+            messagingSenderId: "111911060844",
+            appId: "1:111911060844:web:b07990a53b6bb4ec0d1f49"
+        });
+    </script>
 </head>
 <body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1>Let It Happen</h1>
+            <p>Log in om verder te gaan</p>
+            <input type="email" id="loginEmail" placeholder="E-mailadres">
+            <input type="password" id="loginPassword" placeholder="Wachtwoord">
+            <button id="loginBtn">Inloggen</button>
+            <div id="loginError" class="login-error"></div>
+        </div>
+    </div>
+
+    <!-- App (hidden until logged in) -->
+    <div id="app" style="display:none;">
     <div class="app-header">
         <h1>Let It Happen</h1>
         <div class="data-actions">
@@ -1972,6 +2095,7 @@
                 ⬆ Import
                 <input type="file" id="importFileInput" accept=".json" style="display:none;">
             </label>
+            <button id="logoutBtn" title="Uitloggen">Uitloggen</button>
         </div>
     </div>
 
@@ -2494,8 +2618,120 @@
     </div>
 
     <script>
+        // ========== FIREBASE AUTH & DATABASE ==========
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const DB_ROOT = 'kanban';
+
+        // Login
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginError = document.getElementById('loginError');
+            loginError.textContent = '';
+
+            auth.signInWithEmailAndPassword(email, password)
+                .catch((error) => {
+                    if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        loginError.textContent = 'Onjuist e-mailadres of wachtwoord.';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        loginError.textContent = 'Te veel pogingen. Probeer later opnieuw.';
+                    } else {
+                        loginError.textContent = 'Er ging iets mis. Probeer opnieuw.';
+                    }
+                });
+        });
+
+        // Enter key to login
+        document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('loginBtn').click();
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut();
+        });
+
+        // Auth state
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('app').style.display = '';
+                migrateLocalStorageToFirebase();
+                setupRealtimeSync();
+            } else {
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('app').style.display = 'none';
+            }
+        });
+
+        // Save to localStorage + Firebase
+        function saveData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+            db.ref(DB_ROOT + '/' + key).set(data);
+        }
+
+        // Eenmalige migratie localStorage → Firebase
+        function migrateLocalStorageToFirebase() {
+            const migrated = localStorage.getItem('kanban_firebase_migrated');
+            if (migrated) return;
+
+            const keysToMigrate = [
+                'kanbanTasks_portretcoach', 'kanbanTasks_studio',
+                'kanbanTasks_persoonlijk', 'kanbanTasks_vakantie',
+                'kanbanCurrentProject', 'kanbanTemplates',
+                'kanbanModels', 'kanbanMasterclasses',
+                'omzetData', 'studioNames', 'studioChecklist'
+            ];
+
+            const updates = {};
+            keysToMigrate.forEach(key => {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (raw !== null) {
+                        const data = JSON.parse(raw);
+                        updates[DB_ROOT + '/' + key] = data;
+                    }
+                } catch { /* skip invalid JSON */ }
+            });
+
+            if (Object.keys(updates).length > 0) {
+                db.ref().update(updates);
+            }
+            localStorage.setItem('kanban_firebase_migrated', 'true');
+        }
+
+        // Real-time sync van Firebase → localStorage
+        function setupRealtimeSync() {
+            const keysToSync = [
+                { key: 'kanbanTasks_portretcoach', render: () => { if (currentProject === 'portretcoach') { tasks = loadTasks(); renderBoard(); } } },
+                { key: 'kanbanTasks_studio', render: () => { if (currentProject === 'studio') { tasks = loadTasks(); renderBoard(); } } },
+                { key: 'kanbanTasks_persoonlijk', render: () => { if (currentProject === 'persoonlijk') { tasks = loadTasks(); renderBoard(); } } },
+                { key: 'kanbanTasks_vakantie', render: () => { if (currentProject === 'vakantie') { tasks = loadTasks(); renderBoard(); } } },
+                { key: 'kanbanTemplates', render: () => { templates = JSON.parse(localStorage.getItem('kanbanTemplates')) || []; renderTemplates(); } },
+                { key: 'kanbanModels', render: () => { models = JSON.parse(localStorage.getItem('kanbanModels')) || []; renderModels(); } },
+                { key: 'kanbanMasterclasses', render: () => { masterclasses = JSON.parse(localStorage.getItem('kanbanMasterclasses')) || []; renderMasterclasses(); } },
+                { key: 'omzetData', render: () => { initOmzetTable(); } },
+                { key: 'studioNames', render: () => {} },
+                { key: 'studioChecklist', render: () => {} },
+            ];
+
+            keysToSync.forEach(({ key, render }) => {
+                db.ref(DB_ROOT + '/' + key).on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data !== null && data !== undefined) {
+                        localStorage.setItem(key, JSON.stringify(data));
+                        render();
+                    }
+                });
+            });
+        }
+
         // Current project
-        let currentProject = localStorage.getItem('kanbanCurrentProject') || 'portretcoach';
+        let currentProject = (() => {
+            try { return JSON.parse(localStorage.getItem('kanbanCurrentProject')) || 'portretcoach'; }
+            catch { return localStorage.getItem('kanbanCurrentProject') || 'portretcoach'; }
+        })();
 
         // Load tasks from localStorage
         function loadTasks() {
@@ -2503,15 +2739,15 @@
         }
         let tasks = loadTasks();
 
-        // Save tasks to localStorage
+        // Save tasks to localStorage + Firebase
         function saveTasks() {
-            localStorage.setItem(`kanbanTasks_${currentProject}`, JSON.stringify(tasks));
+            saveData(`kanbanTasks_${currentProject}`, tasks);
         }
 
         // Switch project
         function switchProject(project) {
             currentProject = project;
-            localStorage.setItem('kanbanCurrentProject', project);
+            saveData('kanbanCurrentProject', project);
             tasks = loadTasks();
             renderTasks();
 
@@ -2855,7 +3091,7 @@
 
         // Save omzet data
         function saveOmzetData(data) {
-            localStorage.setItem('omzetData', JSON.stringify(data));
+            saveData('omzetData', data);
         }
 
         // Format currency
@@ -2957,13 +3193,12 @@
         document.getElementById('exportDataBtn').addEventListener('click', () => {
             const data = {
                 exportDate: new Date().toISOString(),
-                version: 2,
+                version: 3,
                 kanbanTasks_portretcoach: localStorage.getItem('kanbanTasks_portretcoach'),
                 kanbanTasks_studio: localStorage.getItem('kanbanTasks_studio'),
                 kanbanTasks_persoonlijk: localStorage.getItem('kanbanTasks_persoonlijk'),
                 kanbanTasks_vakantie: localStorage.getItem('kanbanTasks_vakantie'),
                 kanbanCurrentProject: localStorage.getItem('kanbanCurrentProject'),
-                kanbanAppointments: localStorage.getItem('kanbanAppointments'),
                 kanbanTemplates: localStorage.getItem('kanbanTemplates'),
                 kanbanModels: localStorage.getItem('kanbanModels'),
                 kanbanMasterclasses: localStorage.getItem('kanbanMasterclasses'),
@@ -2995,19 +3230,20 @@
                         return;
                     }
 
-                    // Versie 2: taken per project
-                    if (data.kanbanTasks_portretcoach) localStorage.setItem('kanbanTasks_portretcoach', data.kanbanTasks_portretcoach);
-                    if (data.kanbanTasks_studio) localStorage.setItem('kanbanTasks_studio', data.kanbanTasks_studio);
-                    if (data.kanbanTasks_persoonlijk) localStorage.setItem('kanbanTasks_persoonlijk', data.kanbanTasks_persoonlijk);
-                    if (data.kanbanTasks_vakantie) localStorage.setItem('kanbanTasks_vakantie', data.kanbanTasks_vakantie);
-                    if (data.kanbanCurrentProject) localStorage.setItem('kanbanCurrentProject', data.kanbanCurrentProject);
-                    if (data.kanbanAppointments) localStorage.setItem('kanbanAppointments', data.kanbanAppointments);
-                    if (data.kanbanTemplates) localStorage.setItem('kanbanTemplates', data.kanbanTemplates);
-                    if (data.kanbanModels) localStorage.setItem('kanbanModels', data.kanbanModels);
-                    if (data.kanbanMasterclasses) localStorage.setItem('kanbanMasterclasses', data.kanbanMasterclasses);
-                    if (data.omzetData) localStorage.setItem('omzetData', data.omzetData);
-                    if (data.studioNames) localStorage.setItem('studioNames', data.studioNames);
-                    if (data.studioChecklist) localStorage.setItem('studioChecklist', data.studioChecklist);
+                    // Import data naar localStorage + Firebase
+                    const importKeys = [
+                        'kanbanTasks_portretcoach', 'kanbanTasks_studio',
+                        'kanbanTasks_persoonlijk', 'kanbanTasks_vakantie',
+                        'kanbanCurrentProject', 'kanbanTemplates',
+                        'kanbanModels', 'kanbanMasterclasses',
+                        'omzetData', 'studioNames', 'studioChecklist'
+                    ];
+                    importKeys.forEach(key => {
+                        if (data[key]) {
+                            const parsed = typeof data[key] === 'string' ? JSON.parse(data[key]) : data[key];
+                            saveData(key, parsed);
+                        }
+                    });
 
                     alert('Data succesvol geïmporteerd! De pagina wordt herladen.');
                     location.reload();
@@ -3025,7 +3261,7 @@
         let currentTemplateFilter = 'all';
 
         function saveTemplates() {
-            localStorage.setItem('kanbanTemplates', JSON.stringify(templates));
+            saveData('kanbanTemplates', templates);
         }
 
         function renderTemplates() {
@@ -3299,7 +3535,7 @@
         let currentModelPhoto = null;
 
         function saveModels() {
-            localStorage.setItem('kanbanModels', JSON.stringify(models));
+            saveData('kanbanModels', models);
         }
 
         function renderModels() {
@@ -3607,7 +3843,7 @@
         let masterclassFilter = 'all';
 
         function saveMasterclasses() {
-            localStorage.setItem('kanbanMasterclasses', JSON.stringify(masterclasses));
+            saveData('kanbanMasterclasses', masterclasses);
         }
 
         function renderMasterclasses() {
@@ -4194,5 +4430,6 @@
             }
         });
     </script>
+    </div><!-- /app -->
 </body>
 </html>
