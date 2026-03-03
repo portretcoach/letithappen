@@ -1300,13 +1300,14 @@
         .omzet-table th {
             background: var(--teal);
             color: var(--beige);
-            padding: 8px 5px;
-            text-align: left;
+            padding: 8px 12px;
+            text-align: right;
             font-weight: 500;
             font-size: 0.75rem;
         }
 
         .omzet-table th:first-child {
+            text-align: left;
             border-radius: 8px 0 0 0;
         }
 
@@ -1315,8 +1316,14 @@
         }
 
         .omzet-table td {
-            padding: 6px 5px;
+            padding: 6px 12px;
             border-bottom: 1px solid var(--grey-light);
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .omzet-table td:first-child {
+            text-align: left;
         }
 
         .omzet-table tr:last-child td {
@@ -1339,8 +1346,9 @@
         }
 
         .omzet-table input {
-            width: 80px;
-            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px 8px;
             border: 1px solid var(--grey-light);
             border-radius: 4px;
             font-family: inherit;
