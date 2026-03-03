@@ -1378,6 +1378,274 @@
             border-radius: 0 0 8px 0;
         }
 
+        /* ========== CONTENTPLANNING STYLES ========== */
+        .content-container {
+            display: none;
+            max-width: calc(100% - 360px);
+            margin: 0;
+            margin-left: 20px;
+            padding: 0 20px;
+        }
+
+        .content-container.active {
+            display: block;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .content-header h2 {
+            color: var(--beige);
+            font-weight: 400;
+        }
+
+        .content-header .content-subtitle {
+            color: var(--dark-soft);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        .content-legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .content-legend span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--dark-soft);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .legend-dot.masterclass { background: var(--gold); }
+        .legend-dot.groep { background: #8FAADC; }
+        .legend-dot.regulier { background: #A9D18E; }
+
+        .content-month {
+            margin-bottom: 24px;
+        }
+
+        .content-month-title {
+            color: var(--beige);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .content-month-intro {
+            color: var(--dark-soft);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .content-week-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            background: var(--beige);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.85rem;
+        }
+
+        .content-week-table thead th {
+            background: var(--teal);
+            color: var(--beige);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .content-week-table tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--grey-light);
+            color: var(--dark);
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .content-week-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .content-week-table .week-label {
+            font-weight: 600;
+            color: var(--teal);
+            white-space: nowrap;
+            min-width: 90px;
+        }
+
+        .content-week-table .week-type-masterclass {
+            border-left: 3px solid var(--gold);
+        }
+
+        .content-week-table .week-type-groep {
+            border-left: 3px solid #8FAADC;
+        }
+
+        .content-week-table .week-type-regulier {
+            border-left: 3px solid #A9D18E;
+        }
+
+        .content-dates-section {
+            background: var(--beige);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .content-dates-section h3 {
+            color: var(--teal);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .content-dates-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .content-dates-list li {
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: var(--grey-light);
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+
+        .content-dates-list li strong {
+            color: var(--teal);
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                max-width: 100%;
+                margin-left: 0;
+                padding: 0 10px;
+            }
+
+            .content-week-table {
+                font-size: 0.75rem;
+            }
+
+            .content-week-table thead th,
+            .content-week-table tbody td {
+                padding: 8px;
+            }
+
+            .content-dates-list {
+                grid-template-columns: 1fr;
+            }
+
+            .content-legend {
+                gap: 10px;
+            }
+        }
+
+        /* Current week highlight */
+        .content-week-table tbody tr.current-week {
+            background: rgba(212, 165, 116, 0.12);
+            position: relative;
+        }
+
+        .content-week-table tbody tr.current-week td:first-child::before {
+            content: '📍';
+            display: block;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+        }
+
+        .content-week-table tbody tr.current-week .week-label {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .current-week-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        /* Checkbox task styling */
+        .content-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            cursor: pointer;
+            padding: 2px 0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            transition: opacity 0.2s;
+        }
+
+        .content-check input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            min-width: 16px;
+            margin-top: 1px;
+            accent-color: var(--teal);
+            cursor: pointer;
+        }
+
+        .content-check.checked {
+            opacity: 0.45;
+            text-decoration: line-through;
+            text-decoration-color: var(--dark-soft);
+        }
+
+        /* Week progress indicator */
+        .week-progress {
+            display: inline-block;
+            font-size: 0.7rem;
+            color: var(--dark-soft);
+            margin-top: 4px;
+        }
+
+        .week-progress-bar {
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--grey-light);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+
+        .week-progress-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
         /* ========== MASTERCLASS AANMELDINGEN STYLES ========== */
         .masterclass-container {
             display: none;
@@ -2106,6 +2374,7 @@
         <button class="view-btn" data-view="modellen">Modellen</button>
         <button class="view-btn" data-view="masterclass">Masterclasses</button>
         <button class="view-btn" data-view="omzet">Omzet</button>
+        <button class="view-btn" data-view="content">Content</button>
     </div>
 
     <div class="project-selector">
@@ -2472,8 +2741,7 @@
                 <thead>
                     <tr>
                         <th>Maand</th>
-                        <th>Inkomsten</th>
-                        <th>1100 IB</th>
+                        <th>Inkomsten (na IB)</th>
                         <th>Salaris 50%</th>
                         <th>Opex 25%</th>
                         <th>Sparen 10%</th>
@@ -2485,7 +2753,6 @@
                     <tr data-month="januari">
                         <td class="month-cell">januari</td>
                         <td><input type="number" class="omzet-input" data-month="januari" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2495,7 +2762,6 @@
                     <tr data-month="februari">
                         <td class="month-cell">februari</td>
                         <td><input type="number" class="omzet-input" data-month="februari" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2505,7 +2771,6 @@
                     <tr data-month="maart">
                         <td class="month-cell">maart</td>
                         <td><input type="number" class="omzet-input" data-month="maart" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2515,7 +2780,6 @@
                     <tr data-month="april">
                         <td class="month-cell">april</td>
                         <td><input type="number" class="omzet-input" data-month="april" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2525,7 +2789,6 @@
                     <tr data-month="mei">
                         <td class="month-cell">mei</td>
                         <td><input type="number" class="omzet-input" data-month="mei" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2535,7 +2798,6 @@
                     <tr data-month="juni">
                         <td class="month-cell">juni</td>
                         <td><input type="number" class="omzet-input" data-month="juni" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2545,7 +2807,6 @@
                     <tr data-month="juli">
                         <td class="month-cell">juli</td>
                         <td><input type="number" class="omzet-input" data-month="juli" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2555,7 +2816,6 @@
                     <tr data-month="augustus">
                         <td class="month-cell">augustus</td>
                         <td><input type="number" class="omzet-input" data-month="augustus" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2565,7 +2825,6 @@
                     <tr data-month="september">
                         <td class="month-cell">september</td>
                         <td><input type="number" class="omzet-input" data-month="september" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2575,7 +2834,6 @@
                     <tr data-month="oktober">
                         <td class="month-cell">oktober</td>
                         <td><input type="number" class="omzet-input" data-month="oktober" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2585,7 +2843,6 @@
                     <tr data-month="november">
                         <td class="month-cell">november</td>
                         <td><input type="number" class="omzet-input" data-month="november" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2595,7 +2852,6 @@
                     <tr data-month="december">
                         <td class="month-cell">december</td>
                         <td><input type="number" class="omzet-input" data-month="december" placeholder="0"></td>
-                        <td class="calculated" data-calc="nieuw"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
                         <td class="calculated" data-calc="spaar"></td>
@@ -2605,7 +2861,6 @@
                     <tr class="totals-row">
                         <td>Totaal</td>
                         <td class="calculated" id="totalInkomsten"></td>
-                        <td class="calculated" id="totalNieuw"></td>
                         <td class="calculated" id="totalSalaris"></td>
                         <td class="calculated" id="totalOpex"></td>
                         <td class="calculated" id="totalSpaar"></td>
@@ -2614,6 +2869,459 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Contentplanning View -->
+    <div class="content-container">
+        <div class="content-header">
+            <div>
+                <h2>Contentplanning 2026</h2>
+                <p class="content-subtitle">Week 9 (21 feb) t/m week 37+ (sept) &bull; Instagram: 3x per week (di/do/za) &bull; Nieuwsbrief: elke vrijdag &bull; ~4 uur marketing per week</p>
+            </div>
+        </div>
+
+        <div class="content-legend">
+            <span><span class="legend-dot masterclass"></span> Masterclass / event week</span>
+            <span><span class="legend-dot groep"></span> Groepstraject-actie</span>
+            <span><span class="legend-dot regulier"></span> Reguliere week</span>
+        </div>
+
+        <!-- Februari -->
+        <div class="content-month">
+            <div class="content-month-title">Februari</div>
+            <p class="content-month-intro">Webinar is geweest. Tijd voor nazorg en voorbereiding maart.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-regulier" data-week="9">
+                        <td class="week-label">Week 9<br><small>21–28 feb</small></td>
+                        <td><strong>Nazorg webinar</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w9-focus1"> Follow-up mail naar deelnemers die niet boekten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w9-focus2"> Mini-workshop voorbereiden</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w9-ig-di"> Di: Tip uit webinar (licht lezen)</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w9-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w9-ig-za"> Za: Testimonial of deelnemer uitlichten</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w9-nw"> Persoonlijk verhaal + tip</label><br><em>CTA: masterclass april</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Maart -->
+        <div class="content-month">
+            <div class="content-month-title">Maart</div>
+            <p class="content-month-intro">Masterclass Fine Art Kind op 8 maart (volgeboekt). Promotie april-masterclasses starten.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-masterclass" data-week="10">
+                        <td class="week-label">Week 10<br><small>2–6 mrt</small></td>
+                        <td><strong>Masterclass Fine Art Kind</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w10-focus1"> Uitvoering zo 8 maart</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w10-focus2"> Laatste voorbereiding</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w10-focus3"> Testimonial vragen na afloop</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w10-ig-di"> Di: Educatief: aansturen/connectie</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w10-ig-do"> Do: Countdown/teaser masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w10-ig-za"> Za: Behind-the-scenes masterclass</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w10-nw"> Terugblik masterclass</label><br><em>CTA: masterclasses april</em></td>
+                    </tr>
+                    <tr class="week-type-regulier" data-week="11">
+                        <td class="week-label">Week 11<br><small>9–13 mrt</small></td>
+                        <td><strong>Promotie masterclasses april</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w11-focus1"> Schilderachtig Licht (1 apr) + Fine Art Kind (18 apr) promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w11-focus2"> Testimonials verwerken</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w11-ig-di"> Di: Tip over licht/sfeer</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w11-ig-do"> Do: Persoonlijk verhaal</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w11-ig-za"> Za: Promo masterclass april</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w11-nw"> Verhaal over licht + CTA</label><br><em>CTA: masterclass 1 april</em></td>
+                    </tr>
+                    <tr class="week-type-groep" data-week="12">
+                        <td class="week-label">Week 12<br><small>16–20 mrt</small></td>
+                        <td><strong>Groepstraject + Portfolio Review</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w12-focus1"> 'Coming soon' groepstraject</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w12-focus2"> Wachtlijst-pagina live</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w12-focus3"> Portfolio Review Live (10 apr) aankondigen</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w12-ig-di"> Di: Educatief: mindset/twijfel</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w12-ig-do"> Do: Aankondiging Portfolio Review</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w12-ig-za"> Za: Wachtlijst groepstraject open</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w12-nw"> Eerste hint groepstraject</label><br><em>CTA: wachtlijst + Portfolio Review 10 apr</em></td>
+                    </tr>
+                    <tr class="week-type-regulier" data-week="13">
+                        <td class="week-label">Week 13<br><small>23–27 mrt</small></td>
+                        <td><strong>Portfolio Review Live voorbereiden</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w13-focus1"> Landingspagina live</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w13-focus2"> Aanmeldingen openen</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w13-focus3"> Masterclass april laatste push</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w13-ig-di"> Di: Tip over portfolio/selectie</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w13-ig-do"> Do: Aankondiging Portfolio Review</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w13-ig-za"> Za: Laatste plekken masterclass</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w13-nw"> Wat is het groepstraject?</label><br><em>CTA: wachtlijst + Portfolio Review</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- April -->
+        <div class="content-month">
+            <div class="content-month-title">April</div>
+            <p class="content-month-intro">Twee masterclasses + Portfolio Review Live. Drukke maand!</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-masterclass" data-week="14">
+                        <td class="week-label">Week 14<br><small>30 mrt–3 apr</small></td>
+                        <td><strong>Masterclass Schilderachtig Licht</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w14-focus1"> Uitvoering wo 1 april</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w14-focus2"> Testimonials vragen</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w14-focus3"> Portfolio Review promoten</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w14-ig-di"> Di: Reminder Portfolio Review</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w14-ig-do"> Do: Behind-the-scenes masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w14-ig-za"> Za: Resultaat/testimonial</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w14-nw"> Terugblik masterclass + tip</label><br><em>CTA: Portfolio Review 10 april</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="15">
+                        <td class="week-label">Week 15<br><small>6–10 apr</small></td>
+                        <td><strong>Portfolio Review Live</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w15-focus1"> Uitvoering vr 10 april</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w15-focus2"> Opname klaarzetten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w15-focus3"> Follow-up mails versturen</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w15-ig-di"> Di: Laatste reminder Portfolio Review</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w15-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w15-ig-za"> Za: Inzicht uit de review</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w15-nw"> Uitnodiging Portfolio Review</label><br><em>CTA: aanmelden als kijker</em></td>
+                    </tr>
+                    <tr class="week-type-regulier" data-week="16">
+                        <td class="week-label">Week 16<br><small>13–17 apr</small></td>
+                        <td><strong>Promotie masterclass 18 april</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w16-focus1"> Fine Art Kind promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w16-focus2"> Follow-up Portfolio Review deelnemers richting trajecten</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w16-ig-di"> Di: Educatief: kinderportret tip</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w16-ig-do"> Do: Persoonlijk verhaal</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w16-ig-za"> Za: Countdown masterclass zaterdag</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w16-nw"> Inzicht uit Portfolio Review</label><br><em>CTA: masterclass + trajecten</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="17">
+                        <td class="week-label">Week 17<br><small>21–25 apr</small></td>
+                        <td><strong>Masterclass Fine Art Kind</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w17-focus1"> Uitvoering za 18 april</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w17-focus2"> Nazorg</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w17-focus3"> Start promotie masterclass 27 mei</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w17-ig-di"> Di: Behind-the-scenes masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w17-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w17-ig-za"> Za: Testimonial deelnemer</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w17-nw"> Terugblik + vooruitblik mei</label><br><em>CTA: masterclass 27 mei</em></td>
+                    </tr>
+                    <tr class="week-type-regulier" data-week="18">
+                        <td class="week-label">Week 18<br><small>28 apr–2 mei</small></td>
+                        <td><strong>Aanloop naar mei</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w18-focus1"> Promotie masterclass 27 mei</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w18-focus2"> Groepstraject promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w18-focus3"> Creatiedagen data bepalen</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w18-ig-di"> Di: Tip over eigen stijl vinden</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w18-ig-do"> Do: Persoonlijk: eigen groei</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w18-ig-za"> Za: Promo masterclass mei</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w18-nw"> Thema 'eigen stijl'</label><br><em>CTA: masterclass mei</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mei -->
+        <div class="content-month">
+            <div class="content-month-title">Mei</div>
+            <p class="content-month-intro">Inschrijving groepstraject opent. Masterclass Schilderachtig Licht op 27 mei.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-groep" data-week="19">
+                        <td class="week-label">Week 19<br><small>5–9 mei</small></td>
+                        <td><strong>Inschrijving groepstraject open</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w19-focus1"> Early bird voor wachtlijst</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w19-focus2"> Kennismakingsgesprekken inplannen</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w19-focus3"> Creatiedagen promoten</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w19-ig-di"> Di: Groepstraject: inhoud delen</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w19-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w19-ig-za"> Za: Testimonial oud-deelnemer</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w19-nw"> 'Waarom ik dit traject maakte'</label><br><em>CTA: groepstraject + early bird</em></td>
+                    </tr>
+                    <tr class="week-type-groep" data-week="20">
+                        <td class="week-label">Week 20<br><small>12–16 mei</small></td>
+                        <td><strong>Promotie groepstraject + masterclass</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w20-focus1"> Doorpromoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w20-focus2"> Kennismakingsgesprekken voeren</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w20-ig-di"> Di: Educatief: verdieping/groei</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w20-ig-do"> Do: Persoonlijk verhaal</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w20-ig-za"> Za: 'Nog X plekken' groepstraject</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w20-nw"> Resultaten eerdere deelnemers</label><br><em>CTA: groepstraject</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="21">
+                        <td class="week-label">Week 21<br><small>19–23 mei</small></td>
+                        <td><strong>Laatste week voor masterclass</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w21-focus1"> Masterclass 27 mei promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w21-focus2"> Creatiedagen zomer data communiceren</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w21-ig-di"> Di: Tip over licht/sfeer</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w21-ig-do"> Do: Countdown masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w21-ig-za"> Za: Creatiedagen aankondiging</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w21-nw"> Uitnodiging masterclass</label><br><em>CTA: masterclass 27 mei + creatiedagen</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="22">
+                        <td class="week-label">Week 22<br><small>26–30 mei</small></td>
+                        <td><strong>Masterclass Schilderachtig Licht</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w22-focus1"> Uitvoering wo 27 mei</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w22-focus2"> Testimonials verzamelen</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w22-focus3"> Nazorg</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w22-ig-di"> Di: Laatste reminder masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w22-ig-do"> Do: Behind-the-scenes</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w22-ig-za"> Za: Resultaat/testimonial</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w22-nw"> Terugblik + creatiedagen push</label><br><em>CTA: creatiedagen zomer</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Juni -->
+        <div class="content-month">
+            <div class="content-month-title">Juni</div>
+            <p class="content-month-intro">Masterclass Fine Art Kind (13 juni). Groepstraject deadline eind juni. Portfolio Review #2.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-groep" data-week="23">
+                        <td class="week-label">Week 23<br><small>2–6 jun</small></td>
+                        <td><strong>Promotie groepstraject intensief</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w23-focus1"> Deadline eind juni communiceren</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w23-focus2"> Kennismakingsgesprekken</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w23-ig-di"> Di: Groepstraject: wat leer je?</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w23-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w23-ig-za"> Za: Testimonial + 'nog X plekken'</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w23-nw"> Verdieping groepstraject</label><br><em>CTA: groepstraject (urgentie)</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="24">
+                        <td class="week-label">Week 24<br><small>9–13 jun</small></td>
+                        <td><strong>Masterclass Fine Art Kind</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w24-focus1"> Uitvoering za 13 juni</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w24-focus2"> Groepstraject urgentie opbouwen</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w24-ig-di"> Di: Tip kinderportret</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w24-ig-do"> Do: Countdown masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w24-ig-za"> Za: Behind-the-scenes masterclass</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w24-nw"> 'Laatste weken aanmelden'</label><br><em>CTA: groepstraject + creatiedagen</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="25">
+                        <td class="week-label">Week 25<br><small>16–20 jun</small></td>
+                        <td><strong>Portfolio Review Live #2</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w25-focus1"> Ter promotie van trajecten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w25-focus2"> Groepstraject: laatste push</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w25-ig-di"> Di: Aankondiging Portfolio Review</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w25-ig-do"> Do: Persoonlijk: de volgende stap</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w25-ig-za"> Za: 'Laatste kans groepstraject'</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w25-nw"> Portfolio Review + urgentie</label><br><em>CTA: groepstraject deadline</em></td>
+                    </tr>
+                    <tr class="week-type-groep" data-week="26">
+                        <td class="week-label">Week 26<br><small>23–27 jun</small></td>
+                        <td><strong>Deadline groepstraject</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w26-focus1"> Inschrijving sluit</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w26-focus2"> Creatiedagen zomer promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w26-focus3"> Celebratie als groep rond is</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w26-ig-di"> Di: 'De groep is rond' celebratie</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w26-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w26-ig-za"> Za: Creatiedag promo</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w26-nw"> Bevestiging groep + zomerplannen</label><br><em>CTA: creatiedagen</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Juli -->
+        <div class="content-month">
+            <div class="content-month-title">Juli</div>
+            <p class="content-month-intro">Masterclass Voorbij de Pose (10 juli). Creatiedag #1. Rustige zomerperiode.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-regulier" data-week="27">
+                        <td class="week-label">Week 27<br><small>30 jun–4 jul</small></td>
+                        <td><strong>Promotie masterclass 10 juli</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w27-focus1"> Voorbij de Pose promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w27-focus2"> Creatiedag voorbereiden</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w27-ig-di"> Di: Tip over aansturen/pose</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w27-ig-do"> Do: Persoonlijk verhaal</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w27-ig-za"> Za: Countdown masterclass</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w27-nw"> Zomerse groet + tip</label><br><em>CTA: masterclass 10 juli</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="28">
+                        <td class="week-label">Week 28<br><small>7–11 jul</small></td>
+                        <td><strong>Masterclass Voorbij de Pose</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w28-focus1"> Uitvoering vr 10 juli</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w28-focus2"> Testimonials</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w28-focus3"> Creatiedag promoten</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w28-ig-di"> Di: Laatste reminder masterclass</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w28-ig-do"> Do: Behind-the-scenes</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w28-ig-za"> Za: Resultaat/sfeer</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w28-nw"> Terugblik masterclass</label><br><em>CTA: creatiedag zomer</em></td>
+                    </tr>
+                    <tr class="week-type-regulier" data-week="29">
+                        <td class="week-label">Week 29–30<br><small>14–25 jul</small></td>
+                        <td><strong>Rustige periode</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w29-focus1"> Evergreen content</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w29-focus2"> Content batchen voor augustus</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w29-focus3"> Najaar plannen</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w29-ig-di"> Di: Evergreen tip</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w29-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w29-ig-za"> Za: Lichte zomercontent</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w29-nw"> Lichte zomercontent</label><br><em>Geen harde CTA, inspiratie</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Augustus -->
+        <div class="content-month">
+            <div class="content-month-title">Augustus</div>
+            <p class="content-month-intro">Creatiedag #2. Laatste push groepstraject (als nog plekken). Voorbereiden najaar.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-regulier" data-week="31">
+                        <td class="week-label">Week 31–33<br><small>28 jul–15 aug</small></td>
+                        <td><strong>Zomer afsluiten</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w31-focus1"> Evergreen content</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w31-focus2"> Creatiedag #2 promoten</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w31-focus3"> Reflectie</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w31-ig-di"> Di: Evergreen tip/inspiratie</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w31-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w31-ig-za"> Za: Creatiedag promo</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w31-nw"> Reflectie + vooruitblik</label><br><em>CTA: creatiedag</em></td>
+                    </tr>
+                    <tr class="week-type-masterclass" data-week="34">
+                        <td class="week-label">Week 34<br><small>18–22 aug</small></td>
+                        <td><strong>Creatiedag #2</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w34-focus1"> Uitvoering</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w34-focus2"> Sfeer en resultaten delen</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w34-ig-di"> Di: Educatief: experimenteren</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w34-ig-do"> Do: Behind-the-scenes creatiedag</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w34-ig-za"> Za: Resultaten/sfeer</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w34-nw"> Terugblik zomer</label><br><em>CTA: groepstraject als nog plekken</em></td>
+                    </tr>
+                    <tr class="week-type-groep" data-week="35">
+                        <td class="week-label">Week 35<br><small>25–29 aug</small></td>
+                        <td><strong>Laatste push + najaar</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w35-focus1"> Groepstraject laatste plekken</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w35-focus2"> Voorbereiden webinar Licht Lezen najaar</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w35-ig-di"> Di: 'Start 4 september'</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w35-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w35-ig-za"> Za: Persoonlijke follow-up</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w35-nw"> Laatste kans aanmelden</label><br><em>CTA: groepstraject</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- September -->
+        <div class="content-month">
+            <div class="content-month-title">September</div>
+            <p class="content-month-intro">START groepstraject 4 september. Evaluatie en planning najaar.</p>
+            <table class="content-week-table">
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus &amp; acties</th>
+                        <th>Instagram (di/do/za)</th>
+                        <th>Nieuwsbrief (vrijdag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="week-type-groep" data-week="36">
+                        <td class="week-label">Week 36<br><small>1–5 sep</small></td>
+                        <td><strong>START Verdieping in de Praktijk</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w36-focus1"> Eerste praktijkdag 4 september</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w36-focus2"> Welkom aan de groep</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w36-ig-di"> Di: 'Vandaag beginnen we'</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w36-ig-do"> Do: Welkom groep (met toestemming)</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w36-ig-za"> Za: Nieuwe energie, najaar</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w36-nw"> Nieuwe energie, najaar begint</label><br><em>CTA: webinar Licht Lezen najaar</em></td>
+                    </tr>
+                    <tr class="week-type-regulier" data-week="37">
+                        <td class="week-label">Week 37+<br><small>8 sep+</small></td>
+                        <td><strong>Evaluatie &amp; planning</strong><br>
+                            <label class="content-check"><input type="checkbox" data-task="w37-focus1"> Welke masterclasses populairst?</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w37-focus2"> Najaar plannen</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w37-focus3"> Volgend groepstraject feb 2027?</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w37-ig-di"> Di: Terugblik + les geleerd</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w37-ig-do"> Do: Portfolio post</label><br>
+                            <label class="content-check"><input type="checkbox" data-task="w37-ig-za"> Za: Vooruitblik najaar</label></td>
+                        <td><label class="content-check"><input type="checkbox" data-task="w37-nw"> Terugblik + wat komt er aan</label><br><em>CTA: webinar najaar</em></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Belangrijke data -->
+        <div class="content-dates-section">
+            <h3>Belangrijke data op een rij</h3>
+            <ul class="content-dates-list">
+                <li><strong>Zo 8 maart</strong> &mdash; Masterclass Fine Art Kinderportret (volgeboekt)</li>
+                <li><strong>Wo 1 april</strong> &mdash; Masterclass Schilderachtig Licht</li>
+                <li><strong>Vr 10 april</strong> &mdash; Portfolio Review Live #1</li>
+                <li><strong>Za 18 april</strong> &mdash; Masterclass Fine Art Kinderportret</li>
+                <li><strong>Begin mei</strong> &mdash; Inschrijving groepstraject opent (early bird)</li>
+                <li><strong>Wo 27 mei</strong> &mdash; Masterclass Schilderachtig Licht</li>
+                <li><strong>Za 13 juni</strong> &mdash; Masterclass Fine Art Kinderportret</li>
+                <li><strong>Week 25/26</strong> &mdash; Portfolio Review Live #2 + deadline groepstraject</li>
+                <li><strong>Vr 10 juli</strong> &mdash; Masterclass Voorbij de Pose</li>
+                <li><strong>Zomer</strong> &mdash; Creatiedagen #1 en #2 (data nog te bepalen)</li>
+                <li><strong>Vr 4 september</strong> &mdash; START Verdieping in de Praktijk</li>
+                <li><strong>Najaar</strong> &mdash; Webinar Licht Lezen #2 (datum nog te bepalen)</li>
+            </ul>
         </div>
     </div>
 
@@ -2681,7 +3389,8 @@
                 'kanbanTasks_persoonlijk', 'kanbanTasks_vakantie',
                 'kanbanCurrentProject', 'kanbanTemplates',
                 'kanbanModels', 'kanbanMasterclasses',
-                'omzetData', 'studioNames', 'studioChecklist'
+                'omzetData', 'studioNames', 'studioChecklist',
+                'contentChecked'
             ];
 
             const updates = {};
@@ -2714,6 +3423,7 @@
                 { key: 'omzetData', render: () => { initOmzetTable(); } },
                 { key: 'studioNames', render: () => {} },
                 { key: 'studioChecklist', render: () => {} },
+                { key: 'contentChecked', render: () => { applyContentChecks(); } },
             ];
 
             keysToSync.forEach(({ key, render }) => {
@@ -2974,6 +3684,7 @@
         const modelsEl = document.querySelector('.models-container');
         const masterclassEl = document.querySelector('.masterclass-container');
         const omzetEl = document.querySelector('.omzet-container');
+        const contentEl = document.querySelector('.content-container');
 
         viewBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2988,6 +3699,7 @@
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
                     omzetEl.classList.remove('active');
+                    contentEl.classList.remove('active');
                     projectSelector.style.display = 'flex';
                 } else if (view === 'agenda') {
                     boardEl.classList.add('hidden');
@@ -2996,6 +3708,7 @@
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
                     omzetEl.classList.remove('active');
+                    contentEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                 } else if (view === 'sjablonen') {
                     boardEl.classList.add('hidden');
@@ -3004,6 +3717,7 @@
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
                     omzetEl.classList.remove('active');
+                    contentEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderTemplates();
                 } else if (view === 'modellen') {
@@ -3013,6 +3727,7 @@
                     modelsEl.classList.add('active');
                     masterclassEl.classList.remove('active');
                     omzetEl.classList.remove('active');
+                    contentEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderModels();
                 } else if (view === 'masterclass') {
@@ -3022,6 +3737,7 @@
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.add('active');
                     omzetEl.classList.remove('active');
+                    contentEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                     renderMasterclasses();
                 } else if (view === 'omzet') {
@@ -3031,6 +3747,16 @@
                     modelsEl.classList.remove('active');
                     masterclassEl.classList.remove('active');
                     omzetEl.classList.add('active');
+                    contentEl.classList.remove('active');
+                    projectSelector.style.display = 'none';
+                } else if (view === 'content') {
+                    boardEl.classList.add('hidden');
+                    agendaEl.classList.remove('active');
+                    templatesEl.classList.remove('active');
+                    modelsEl.classList.remove('active');
+                    masterclassEl.classList.remove('active');
+                    omzetEl.classList.remove('active');
+                    contentEl.classList.add('active');
                     projectSelector.style.display = 'none';
                 }
             });
@@ -3105,14 +3831,12 @@
             const row = document.querySelector(`tr[data-month="${month}"]`);
             if (!row) return;
 
-            const nieuwBedrag = bedrag - 1100; // Trek 1100 IB af
-            const salaris = nieuwBedrag * 0.50;
-            const opex = nieuwBedrag * 0.25;
-            const spaar = nieuwBedrag * 0.10;
-            const belasting = nieuwBedrag * 0.10;
-            const profit = nieuwBedrag * 0.05;
+            const salaris = bedrag * 0.50;
+            const opex = bedrag * 0.25;
+            const spaar = bedrag * 0.10;
+            const belasting = bedrag * 0.10;
+            const profit = bedrag * 0.05;
 
-            row.querySelector('[data-calc="nieuw"]').textContent = bedrag > 0 ? formatCurrency(nieuwBedrag) : '';
             row.querySelector('[data-calc="salaris"]').textContent = bedrag > 0 ? formatCurrency(salaris) : '';
             row.querySelector('[data-calc="opex"]').textContent = bedrag > 0 ? formatCurrency(opex) : '';
             row.querySelector('[data-calc="spaar"]').textContent = bedrag > 0 ? formatCurrency(spaar) : '';
@@ -3124,7 +3848,6 @@
         function calculateOmzetTotals() {
             const data = loadOmzetData();
             let totalInkomsten = 0;
-            let totalNieuw = 0;
             let totalSalaris = 0;
             let totalOpex = 0;
             let totalSpaar = 0;
@@ -3134,18 +3857,15 @@
             Object.values(data).forEach(bedrag => {
                 if (bedrag > 0) {
                     totalInkomsten += bedrag;
-                    const nieuw = bedrag - 1100;
-                    totalNieuw += nieuw;
-                    totalSalaris += nieuw * 0.50;
-                    totalOpex += nieuw * 0.25;
-                    totalSpaar += nieuw * 0.10;
-                    totalBelasting += nieuw * 0.10;
-                    totalProfit += nieuw * 0.05;
+                    totalSalaris += bedrag * 0.50;
+                    totalOpex += bedrag * 0.25;
+                    totalSpaar += bedrag * 0.10;
+                    totalBelasting += bedrag * 0.10;
+                    totalProfit += bedrag * 0.05;
                 }
             });
 
             document.getElementById('totalInkomsten').textContent = formatCurrency(totalInkomsten);
-            document.getElementById('totalNieuw').textContent = formatCurrency(totalNieuw);
             document.getElementById('totalSalaris').textContent = formatCurrency(totalSalaris);
             document.getElementById('totalOpex').textContent = formatCurrency(totalOpex);
             document.getElementById('totalSpaar').textContent = formatCurrency(totalSpaar);
@@ -4429,6 +5149,142 @@
                 currentMasterclassId = null;
             }
         });
+
+        // ========== CONTENTPLANNING: WEEK HIGHLIGHT & CHECKBOXES ==========
+
+        // Get ISO week number
+        function getISOWeek(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        // Highlight current week row and scroll into view
+        function highlightCurrentWeek() {
+            const currentWeek = getISOWeek(new Date());
+            const rows = document.querySelectorAll('.content-week-table tbody tr[data-week]');
+
+            rows.forEach(row => {
+                row.classList.remove('current-week');
+                // Remove existing badges
+                const existingBadge = row.querySelector('.current-week-badge');
+                if (existingBadge) existingBadge.remove();
+
+                const weekAttr = row.dataset.week;
+                // Handle ranges like "29" for "29–30" and "31" for "31–33"
+                const weekNum = parseInt(weekAttr);
+                let isCurrentWeek = false;
+
+                if (weekAttr === '29' && (currentWeek >= 29 && currentWeek <= 30)) isCurrentWeek = true;
+                else if (weekAttr === '31' && (currentWeek >= 31 && currentWeek <= 33)) isCurrentWeek = true;
+                else if (weekAttr === '37' && currentWeek >= 37) isCurrentWeek = true;
+                else if (weekNum === currentWeek) isCurrentWeek = true;
+
+                if (isCurrentWeek) {
+                    row.classList.add('current-week');
+                    // Add badge to week label
+                    const weekLabel = row.querySelector('.week-label');
+                    if (weekLabel) {
+                        const badge = document.createElement('span');
+                        badge.className = 'current-week-badge';
+                        badge.textContent = 'NU';
+                        weekLabel.appendChild(badge);
+                    }
+                    // Scroll into view when content tab is shown
+                    setTimeout(() => {
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
+            });
+        }
+
+        // Load saved checkbox states
+        function loadContentChecks() {
+            let checks = {};
+            try {
+                checks = JSON.parse(localStorage.getItem('contentChecked')) || {};
+            } catch { checks = {}; }
+            return checks;
+        }
+
+        // Apply saved states to checkboxes
+        function applyContentChecks() {
+            const checks = loadContentChecks();
+            document.querySelectorAll('.content-check input[type="checkbox"]').forEach(cb => {
+                const taskId = cb.dataset.task;
+                if (taskId && checks[taskId]) {
+                    cb.checked = true;
+                    cb.closest('.content-check').classList.add('checked');
+                }
+            });
+            updateWeekProgress();
+        }
+
+        // Save checkbox state
+        function saveContentCheck(taskId, isChecked) {
+            const checks = loadContentChecks();
+            if (isChecked) {
+                checks[taskId] = true;
+            } else {
+                delete checks[taskId];
+            }
+            saveData('contentChecked', checks);
+        }
+
+        // Update week progress bars
+        function updateWeekProgress() {
+            document.querySelectorAll('.content-week-table tbody tr[data-week]').forEach(row => {
+                const checkboxes = row.querySelectorAll('.content-check input[type="checkbox"]');
+                if (checkboxes.length === 0) return;
+
+                const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+                const total = checkboxes.length;
+
+                // Find or create progress indicator in the week-label cell
+                const weekLabel = row.querySelector('.week-label');
+                if (!weekLabel) return;
+
+                let progress = weekLabel.querySelector('.week-progress');
+                if (!progress) {
+                    progress = document.createElement('span');
+                    progress.className = 'week-progress';
+                    progress.innerHTML = '<span class="progress-text"></span><span class="week-progress-bar"><span class="week-progress-fill"></span></span>';
+                    weekLabel.appendChild(progress);
+                }
+
+                const pct = Math.round((checked / total) * 100);
+                progress.querySelector('.progress-text').textContent = checked + '/' + total;
+                progress.querySelector('.week-progress-fill').style.width = pct + '%';
+            });
+        }
+
+        // Event delegation for checkboxes
+        document.querySelector('.content-container').addEventListener('change', (e) => {
+            if (e.target.matches('.content-check input[type="checkbox"]')) {
+                const cb = e.target;
+                const label = cb.closest('.content-check');
+                if (cb.checked) {
+                    label.classList.add('checked');
+                } else {
+                    label.classList.remove('checked');
+                }
+                saveContentCheck(cb.dataset.task, cb.checked);
+                updateWeekProgress();
+            }
+        });
+
+        // Initialize when content tab is clicked
+        const origContentClick = document.querySelector('.view-btn[data-view="content"]');
+        if (origContentClick) {
+            origContentClick.addEventListener('click', () => {
+                setTimeout(() => {
+                    highlightCurrentWeek();
+                    applyContentChecks();
+                }, 50);
+            });
+        }
     </script>
     </div><!-- /app -->
 </body>
