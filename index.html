@@ -3784,7 +3784,16 @@
                 { key: 'kanbanTasks_persoonlijk', render: () => { if (currentProject === 'persoonlijk') { tasks = loadTasks(); renderBoard(); } } },
                 { key: 'kanbanTasks_vakantie', render: () => { if (currentProject === 'vakantie') { tasks = loadTasks(); renderBoard(); } } },
                 { key: 'kanbanTemplates', render: () => { templates = JSON.parse(localStorage.getItem('kanbanTemplates')) || []; renderTemplates(); } },
-                { key: 'kanbanModels', render: () => { models = JSON.parse(localStorage.getItem('kanbanModels')) || []; renderModels(); } },
+                { key: 'kanbanModels', render: (firebaseData) => {
+                    // Merge: bewaar foto's uit localStorage, update rest vanuit Firebase
+                    const local = JSON.parse(localStorage.getItem('kanbanModels')) || [];
+                    const photoMap = {};
+                    local.forEach(m => { if (m.photo) photoMap[m.id] = m.photo; });
+                    const merged = (firebaseData || []).map(m => ({ ...m, photo: photoMap[m.id] || null }));
+                    localStorage.setItem('kanbanModels', JSON.stringify(merged));
+                    models = merged;
+                    renderModels();
+                } },
                 { key: 'kanbanMasterclasses', render: () => { masterclasses = JSON.parse(localStorage.getItem('kanbanMasterclasses')) || []; renderMasterclasses(); } },
                 { key: 'omzetData', render: () => { initOmzetTable(); } },
                 { key: 'studioNames', render: () => {} },
@@ -3797,7 +3806,7 @@
                     const data = snapshot.val();
                     if (data !== null && data !== undefined) {
                         localStorage.setItem(key, JSON.stringify(data));
-                        render();
+                        render(data);
                     }
                 });
             });
@@ -4687,7 +4696,14 @@
         let currentModelPhoto = null;
 
         function saveModels() {
-            saveData('kanbanModels', models);
+            // Sla volledig (inclusief foto) op in localStorage
+            localStorage.setItem('kanbanModels', JSON.stringify(models));
+            // Sla naar Firebase zonder foto-data (base64 is te groot)
+            const modelsWithoutPhotos = models.map(m => {
+                const { photo, ...rest } = m;
+                return rest;
+            });
+            db.ref(DB_ROOT + '/kanbanModels').set(modelsWithoutPhotos);
         }
 
         function renderModels() {
@@ -5721,7 +5737,7 @@
         // ========== HERINNERINGEN WIDGET ==========
         let agendaReminders = JSON.parse(localStorage.getItem('agendaReminders')) || [];
         let calendarEvents = JSON.parse(localStorage.getItem('calendarEvents')) || [];
-        let calendarApiUrl = localStorage.getItem('calendarApiUrl') || '';
+        let calendarApiUrl = localStorage.getItem('calendarApiUrl') || 'https://script.google.com/macros/s/AKfycby1sAb65zUln91ryB0FErjl2dZJavO_QLCc-O7UJDOHoJm4RBxlRdh-YN4KlsbuRupG/exec';
 
         function saveReminders() {
             saveData('agendaReminders', agendaReminders);
@@ -5795,6 +5811,16 @@
                         source: 'calendar',
                         isEvent: false
                     });
+                    const infoDate = new Date(eventDate);
+                    infoDate.setDate(infoDate.getDate() + 1);
+                    actions.push({
+                        id: e.id + '-infomail',
+                        actionDate: infoDate,
+                        daysUntil: Math.ceil((infoDate - today) / 86400000),
+                        label: `📨 Stuur info mail na masterclass — ${e.title}`,
+                        source: 'calendar',
+                        isEvent: false
+                    });
                 }
 
                 const typeIcon = e.type === 'fotoshoot' ? '📸' : e.type === 'masterclass' ? '🎓' : '📌';
@@ -5839,6 +5865,17 @@
                         isEvent: false,
                         reminderId: r.id
                     });
+                    const infoDate = new Date(eventDate);
+                    infoDate.setDate(infoDate.getDate() + 1);
+                    actions.push({
+                        id: r.id + '-infomail',
+                        actionDate: infoDate,
+                        daysUntil: Math.ceil((infoDate - today) / 86400000),
+                        label: `📨 Stuur info mail na masterclass — ${r.title}`,
+                        source: 'manual',
+                        isEvent: false,
+                        reminderId: r.id
+                    });
                 }
 
                 const typeLabel = r.type === 'fotoshoot' ? '📸 Fotoshoot' : r.type === 'masterclass' ? '🎓 Masterclass' : '📌';
@@ -5856,8 +5893,8 @@
             // Sorteer op actiedatum
             actions.sort((a, b) => a.actionDate - b.actionDate);
 
-            // Toon alles vanaf 3 dagen geleden
-            const visible = actions.filter(a => a.daysUntil >= -3);
+            // Toon alles van 3 dagen geleden t/m 14 dagen vooruit
+            const visible = actions.filter(a => a.daysUntil >= -3 && a.daysUntil <= 14);
 
             if (visible.length === 0) {
                 container.innerHTML = '<div class="reminder-empty">Geen aankomende acties.' +
