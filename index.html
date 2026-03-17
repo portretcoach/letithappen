@@ -1399,6 +1399,52 @@
             display: block;
         }
 
+        /* ========== INSPIRATIE WIDGET ========== */
+        .inspiratie-widget {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            width: 330px;
+            bottom: 20px;
+            background: var(--beige);
+            border-radius: 12px;
+            padding: 18px;
+            overflow-y: auto;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+        .inspiratie-widget.active { display: block; }
+        .inspiratie-widget h3 {
+            color: var(--teal);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .inspiratie-categorie {
+            margin-bottom: 14px;
+        }
+        .inspiratie-categorie h4 {
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--dark-soft);
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--grey-light);
+        }
+        .inspiratie-categorie ol {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .inspiratie-categorie li {
+            font-size: 0.82rem;
+            color: var(--dark);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
         /* ========== FOTOSHOOTS STYLES ========== */
         .fotoshoots-container {
             display: none;
@@ -3659,6 +3705,83 @@
         </div>
     </div>
 
+    <!-- Inspiratie Widget (Content tab) -->
+    <div class="inspiratie-widget" id="inspiratieWidget">
+        <h3>💡 Inspiratie: schrijfonderwerpen</h3>
+
+        <div class="inspiratie-categorie">
+            <h4>Zelfvertrouwen &amp; mindset</h4>
+            <ol>
+                <li>De onzekerheid die nooit helemaal weggaat, ook niet na 10 jaar</li>
+                <li>Faalangst: bang zijn om niet te kunnen leveren wat de klant verwacht</li>
+                <li>De lat te hoog leggen voor jezelf (en waarom dat verlammend werkt)</li>
+                <li>"Ben ik wel goed genoeg?" en hoe je daarmee omgaat</li>
+                <li>Vergelijken met andere fotografen op social media</li>
+                <li>Durven geld vragen voor je werk</li>
+            </ol>
+        </div>
+
+        <div class="inspiratie-categorie">
+            <h4>Licht &amp; techniek</h4>
+            <ol start="7">
+                <li>Licht leren lezen: waar begin je?</li>
+                <li>Het verschil tussen daglicht en studiolicht (en waarom je niet hoeft te kiezen)</li>
+                <li>Intuïtief werken met licht in plaats van recepten volgen</li>
+                <li>Variatie in je lichtopstellingen vinden</li>
+            </ol>
+        </div>
+
+        <div class="inspiratie-categorie">
+            <h4>Aansturen &amp; poseren</h4>
+            <ol start="11">
+                <li>Je model op z'n gemak stellen als ze zenuwachtiger zijn dan jij</li>
+                <li>Zelf de regie nemen in een shoot (in plaats van de klant)</li>
+                <li>Omgaan met mensen die zichzelf niet mooi vinden</li>
+                <li>Minder poses, meer echtheid</li>
+            </ol>
+        </div>
+
+        <div class="inspiratie-categorie">
+            <h4>Eigen stijl vinden</h4>
+            <ol start="15">
+                <li>Het verschil tussen invloeden verzamelen en je eigen handschrift ontwikkelen</li>
+                <li>Hoe weet je of je een stijl hebt? (bijna iedereen zegt "er is een begin")</li>
+                <li>Vrij werk maken als tegenwicht voor opdrachten</li>
+                <li>Durven experimenteren vs. "veilig" blijven fotograferen</li>
+            </ol>
+        </div>
+
+        <div class="inspiratie-categorie">
+            <h4>Ondernemen &amp; zichtbaarheid</h4>
+            <ol start="19">
+                <li>Klanten vinden zonder je ziel te verkopen op social media</li>
+                <li>Waarom een goed portfolio niet genoeg is</li>
+                <li>Van hobby/semi-pro naar een lopend bedrijf</li>
+                <li>Balans tussen loondienst en fotografie</li>
+                <li>Prijzen verhogen (en geloven dat je het waard bent)</li>
+            </ol>
+        </div>
+
+        <div class="inspiratie-categorie">
+            <h4>Verbinding &amp; isolatie</h4>
+            <ol start="24">
+                <li>De eenzaamheid van het vak: gelijkgestemden vinden</li>
+                <li>Waarom community belangrijker is dan nóg een cursus</li>
+                <li>Leren van andere fotografen zonder je te vergelijken</li>
+            </ol>
+        </div>
+
+        <div class="inspiratie-categorie">
+            <h4>Creativiteit &amp; flow</h4>
+            <ol start="27">
+                <li>Vastlopen en hoe je er weer uitkomt</li>
+                <li>Wanneer "moeten" het plezier verdringt</li>
+                <li>Weer de drang voor creatie voelen</li>
+                <li>Waarom minder shoots soms meer oplevert</li>
+            </ol>
+        </div>
+    </div>
+
     <!-- Fotoshoots Klanten View -->
     <div class="fotoshoots-container">
         <div class="fotoshoots-header">
@@ -4061,6 +4184,7 @@
         const omzetEl = document.querySelector('.omzet-container');
         const contentEl = document.querySelector('.content-container');
         const fotoshootsEl = document.querySelector('.fotoshoots-container');
+        const inspiratieWidgetEl = document.getElementById('inspiratieWidget');
 
         viewBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -4078,6 +4202,7 @@
                     omzetEl.classList.remove('active');
                     contentEl.classList.remove('active');
                     fotoshootsEl.classList.remove('active');
+                    inspiratieWidgetEl.classList.remove('active');
                     projectSelector.style.display = 'none';
                 }
 
@@ -4106,6 +4231,7 @@
                 } else if (view === 'content') {
                     hideAll();
                     contentEl.classList.add('active');
+                    inspiratieWidgetEl.classList.add('active');
                 } else if (view === 'fotoshoots') {
                     hideAll();
                     fotoshootsEl.classList.add('active');
