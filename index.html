@@ -2672,6 +2672,7 @@
             <input type="email" id="loginEmail" placeholder="E-mailadres">
             <input type="password" id="loginPassword" placeholder="Wachtwoord">
             <button id="loginBtn">Inloggen</button>
+            <a href="#" id="forgotPasswordBtn" style="display:inline-block;margin-top:10px;color:var(--teal-light);font-size:0.9em;text-decoration:underline;cursor:pointer;">Wachtwoord vergeten?</a>
             <div id="loginError" class="login-error"></div>
         </div>
     </div>
@@ -3850,6 +3851,31 @@
                     } else {
                         loginError.textContent = 'Er ging iets mis. Probeer opnieuw.';
                     }
+                });
+        });
+
+        // Forgot password
+        document.getElementById('forgotPasswordBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const loginError = document.getElementById('loginError');
+            if (!email) {
+                loginError.textContent = 'Vul eerst je e-mailadres in.';
+                loginError.style.color = 'var(--terracotta)';
+                return;
+            }
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    loginError.textContent = 'Reset-link verstuurd naar ' + email + '. Check je inbox!';
+                    loginError.style.color = 'var(--teal)';
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/user-not-found') {
+                        loginError.textContent = 'Geen account gevonden met dit e-mailadres.';
+                    } else {
+                        loginError.textContent = 'Er ging iets mis. Probeer opnieuw.';
+                    }
+                    loginError.style.color = 'var(--terracotta)';
                 });
         });
 
