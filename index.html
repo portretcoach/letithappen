@@ -3121,6 +3121,7 @@
                 <thead>
                     <tr>
                         <th>Maand</th>
+                        <th>Omzet (bruto)</th>
                         <th>Inkomsten (na IB en huur)</th>
                         <th>Salaris 50%</th>
                         <th>Opex 25%</th>
@@ -3132,6 +3133,7 @@
                 <tbody id="omzetTableBody">
                     <tr data-month="januari">
                         <td class="month-cell">januari</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="januari" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="januari" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3141,6 +3143,7 @@
                     </tr>
                     <tr data-month="februari">
                         <td class="month-cell">februari</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="februari" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="februari" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3150,6 +3153,7 @@
                     </tr>
                     <tr data-month="maart">
                         <td class="month-cell">maart</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="maart" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="maart" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3159,6 +3163,7 @@
                     </tr>
                     <tr data-month="april">
                         <td class="month-cell">april</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="april" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="april" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3168,6 +3173,7 @@
                     </tr>
                     <tr data-month="mei">
                         <td class="month-cell">mei</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="mei" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="mei" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3177,6 +3183,7 @@
                     </tr>
                     <tr data-month="juni">
                         <td class="month-cell">juni</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="juni" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="juni" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3186,6 +3193,7 @@
                     </tr>
                     <tr data-month="juli">
                         <td class="month-cell">juli</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="juli" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="juli" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3195,6 +3203,7 @@
                     </tr>
                     <tr data-month="augustus">
                         <td class="month-cell">augustus</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="augustus" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="augustus" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3204,6 +3213,7 @@
                     </tr>
                     <tr data-month="september">
                         <td class="month-cell">september</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="september" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="september" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3213,6 +3223,7 @@
                     </tr>
                     <tr data-month="oktober">
                         <td class="month-cell">oktober</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="oktober" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="oktober" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3222,6 +3233,7 @@
                     </tr>
                     <tr data-month="november">
                         <td class="month-cell">november</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="november" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="november" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3231,6 +3243,7 @@
                     </tr>
                     <tr data-month="december">
                         <td class="month-cell">december</td>
+                        <td><input type="number" class="omzet-bruto-input" data-month="december" placeholder="0"></td>
                         <td><input type="number" class="omzet-input" data-month="december" placeholder="0"></td>
                         <td class="calculated" data-calc="salaris"></td>
                         <td class="calculated" data-calc="opex"></td>
@@ -3240,6 +3253,7 @@
                     </tr>
                     <tr class="totals-row">
                         <td>Totaal</td>
+                        <td class="calculated" id="totalOmzetBruto"></td>
                         <td class="calculated" id="totalInkomsten"></td>
                         <td class="calculated" id="totalSalaris"></td>
                         <td class="calculated" id="totalOpex"></td>
@@ -4298,6 +4312,15 @@
             saveData('omzetData', data);
         }
 
+        function loadOmzetBrutoData() {
+            const saved = localStorage.getItem('omzetBrutoData');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveOmzetBrutoData(data) {
+            saveData('omzetBrutoData', data);
+        }
+
         // Format currency
         function formatCurrency(amount) {
             if (amount === 0 || isNaN(amount)) return '€ 0';
@@ -4325,12 +4348,14 @@
         // Calculate totals
         function calculateOmzetTotals() {
             const data = loadOmzetData();
+            const brutoData = loadOmzetBrutoData();
             let totalInkomsten = 0;
             let totalSalaris = 0;
             let totalOpex = 0;
             let totalSpaar = 0;
             let totalBelasting = 0;
             let totalProfit = 0;
+            let totalBruto = 0;
 
             Object.values(data).forEach(bedrag => {
                 if (bedrag > 0) {
@@ -4343,6 +4368,11 @@
                 }
             });
 
+            Object.values(brutoData).forEach(bedrag => {
+                if (bedrag > 0) totalBruto += bedrag;
+            });
+
+            document.getElementById('totalOmzetBruto').textContent = formatCurrency(totalBruto);
             document.getElementById('totalInkomsten').textContent = formatCurrency(totalInkomsten);
             document.getElementById('totalSalaris').textContent = formatCurrency(totalSalaris);
             document.getElementById('totalOpex').textContent = formatCurrency(totalOpex);
@@ -4354,6 +4384,7 @@
         // Initialize omzet table
         function initOmzetTable() {
             const data = loadOmzetData();
+            const brutoData = loadOmzetBrutoData();
 
             // Fill in saved values and calculate
             document.querySelectorAll('.omzet-input').forEach(input => {
@@ -4361,6 +4392,13 @@
                 if (data[month]) {
                     input.value = data[month];
                     calculateOmzetRow(month, data[month]);
+                }
+            });
+
+            document.querySelectorAll('.omzet-bruto-input').forEach(input => {
+                const month = input.dataset.month;
+                if (brutoData[month]) {
+                    input.value = brutoData[month];
                 }
             });
 
@@ -4379,6 +4417,19 @@
 
                     // Calculate
                     calculateOmzetRow(month, bedrag);
+                    calculateOmzetTotals();
+                });
+            });
+
+            document.querySelectorAll('.omzet-bruto-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const month = e.target.dataset.month;
+                    const bedrag = parseFloat(e.target.value) || 0;
+
+                    const brutoData = loadOmzetBrutoData();
+                    brutoData[month] = bedrag;
+                    saveOmzetBrutoData(brutoData);
+
                     calculateOmzetTotals();
                 });
             });
