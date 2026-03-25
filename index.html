@@ -3815,6 +3815,7 @@
                         <th>Gallery</th>
                         <th>Nabewerking</th>
                         <th>Bestelling</th>
+                        <th>Factuur</th>
                         <th>Review</th>
                         <th>Goedkeuring<br>Socials</th>
                         <th></th>
@@ -3822,7 +3823,7 @@
                 </thead>
                 <tbody id="fotoshootsTableBody">
                     <tr class="no-clients-msg-row">
-                        <td colspan="11" class="no-clients-msg">Nog geen klanten. Klik op "+ Nieuwe klant" om te beginnen.</td>
+                        <td colspan="12" class="no-clients-msg">Nog geen klanten. Klik op "+ Nieuwe klant" om te beginnen.</td>
                     </tr>
                 </tbody>
             </table>
@@ -4560,7 +4561,7 @@
             if (!tbody) return;
 
             if (clients.length === 0) {
-                tbody.innerHTML = `<tr class="no-clients-msg-row"><td colspan="11" class="no-clients-msg">Nog geen klanten. Klik op "+ Nieuwe klant" om te beginnen.</td></tr>`;
+                tbody.innerHTML = `<tr class="no-clients-msg-row"><td colspan="12" class="no-clients-msg">Nog geen klanten. Klik op "+ Nieuwe klant" om te beginnen.</td></tr>`;
                 return;
             }
 
